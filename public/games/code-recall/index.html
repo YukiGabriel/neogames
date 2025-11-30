@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Recall</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+            color: white;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        .splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0066ff 0%, #00d4ff 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 20000;
+            animation: fadeOut 0.8s 3s forwards;
+        }
+        @keyframes fadeOut {
+            to { opacity: 0; pointer-events: none; }
+        }
+        .neo-logo {
+            font-size: 8rem;
+            font-weight: 900;
+            color: white;
+            text-shadow: 0 0 40px rgba(255,255,255,0.8);
+        }
+        .neo-text {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: white;
+            margin-top: 30px;
+            letter-spacing: 8px;
+        }
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 19999;
+            animation: fadeOut 0.5s 4s forwards;
+        }
+        .game-title {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #00d4ff;
+            margin-bottom: 30px;
+        }
+        .loading-bar {
+            width: 300px;
+            height: 10px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .loading-fill {
+            height: 100%;
+            background: #00d4ff;
+            border-radius: 10px;
+            animation: loadProgress 1s 3s forwards;
+            width: 0;
+        }
+        @keyframes loadProgress {
+            to { width: 100%; }
+        }
+        .main-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            opacity: 0;
+            animation: fadeIn 0.5s 4.5s forwards;
+        }
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        .main-menu.hidden { display: none; }
+        .main-menu.visible { opacity: 1; animation: none; }
+        .main-menu-title {
+            font-size: 4rem;
+            font-weight: bold;
+            color: #00d4ff;
+            margin-bottom: 50px;
+            text-shadow: 0 0 20px rgba(0,212,255,0.5);
+        }
+        .main-menu-btn {
+            width: 300px;
+            padding: 20px;
+            margin: 10px;
+            background: rgba(0,212,255,0.2);
+            border: 3px solid #00d4ff;
+            color: white;
+            font-size: 1.3rem;
+            font-weight: bold;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .main-menu-btn:hover {
+            background: rgba(0,212,255,0.3);
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(0,212,255,0.5);
+        }
+        .main-menu-btn.primary {
+            background: #00d4ff;
+            color: #0a0a0a;
+        }
+        .game-container {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+            padding: 20px;
+        }
+        .game-container.active { display: flex; }
+        .score-display {
+            text-align: center;
+        }
+        .score-label {
+            font-size: 1rem;
+            color: #888;
+            margin-bottom: 5px;
+        }
+        .score-value {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #00d4ff;
+            text-shadow: 0 0 20px rgba(0,212,255,0.5);
+        }
+        .console {
+            display: grid;
+            gap: 15px;
+            padding: 40px;
+            background: linear-gradient(135deg, rgba(0,212,255,0.1), rgba(102,126,234,0.1));
+            border-radius: 25px;
+            border: 4px solid rgba(0,212,255,0.4);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.7), inset 0 0 30px rgba(0,212,255,0.1);
+            backdrop-filter: blur(10px);
+            transition: all 0.5s ease;
+        }
+        .color-btn {
+            border-radius: 20px;
+            border: 4px solid rgba(255,255,255,0.3);
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4), inset 0 2px 10px rgba(255,255,255,0.2);
+        }
+        .color-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+        .color-btn:hover::before { left: 100%; }
+        .color-btn:hover { transform: scale(1.08) translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.5); }
+        .color-btn:active { transform: scale(0.92); }
+        .color-btn.active {
+            box-shadow: 0 0 60px currentColor, 0 0 100px currentColor, inset 0 0 30px rgba(255,255,255,0.5);
+            transform: scale(1.15);
+            filter: brightness(1.8) saturate(1.5);
+            border-color: white;
+            animation: pulse 0.4s ease-in-out;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1.15); }
+            50% { transform: scale(1.2); }
+        }
+        .color-btn.blue { background: linear-gradient(135deg, #0066ff, #00aaff); }
+        .color-btn.red { background: linear-gradient(135deg, #ff0066, #ff3388); }
+        .color-btn.green { background: linear-gradient(135deg, #00ff66, #00ff99); }
+        .color-btn.yellow { background: linear-gradient(135deg, #ffff00, #ffcc00); }
+        .color-btn.purple { background: linear-gradient(135deg, #9966ff, #cc66ff); }
+        .color-btn.orange { background: linear-gradient(135deg, #ff6600, #ff9933); }
+        .color-btn.cyan { background: linear-gradient(135deg, #00ffff, #00ccff); }
+        .color-btn.pink { background: linear-gradient(135deg, #ff66cc, #ff99dd); }
+        .color-btn.lime { background: linear-gradient(135deg, #ccff00, #99ff00); }
+        .color-btn.magenta { background: linear-gradient(135deg, #ff00ff, #ff66ff); }
+        .color-btn.teal { background: linear-gradient(135deg, #00ffcc, #00cc99); }
+        .color-btn.indigo { background: linear-gradient(135deg, #6600ff, #9933ff); }
+        .color-btn.coral { background: linear-gradient(135deg, #ff7f50, #ff6347); }
+        .color-btn.gold { background: linear-gradient(135deg, #ffd700, #ffed4e); }
+        .color-btn.silver { background: linear-gradient(135deg, #c0c0c0, #e8e8e8); }
+        .color-btn.bronze { background: linear-gradient(135deg, #cd7f32, #b87333); }
+        .status-text {
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-align: center;
+            min-height: 40px;
+            color: #00d4ff;
+        }
+        .menu-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            padding: 12px 25px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            border: 2px solid #00d4ff;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 1000;
+            transition: all 0.3s;
+        }
+        .menu-btn:hover { background: rgba(0,0,0,0.9); transform: scale(1.05); }
+        .game-over-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.95);
+            padding: 40px;
+            border-radius: 20px;
+            border: 3px solid #00d4ff;
+            z-index: 2000;
+            display: none;
+            text-align: center;
+        }
+        .game-over-modal.show { display: block; }
+        .modal-title { font-size: 2.5rem; color: #00d4ff; margin-bottom: 20px; }
+        .modal-score { font-size: 1.5rem; margin: 15px 0; }
+        .modal-btn {
+            padding: 15px 40px;
+            margin: 10px;
+            background: #00d4ff;
+            color: #0a0a0a;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .modal-btn:hover { transform: scale(1.05); box-shadow: 0 0 20px rgba(0,212,255,0.5); }
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1999;
+            display: none;
+        }
+        .overlay.show { display: block; }
+        .level-indicator {
+            font-size: 1.2rem;
+            color: #00d4ff;
+            text-align: center;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        @media (max-width: 768px) {
+            .main-menu-title { font-size: 2.5rem; }
+            .score-value { font-size: 2rem; }
+            .console { padding: 20px; gap: 10px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="splash-screen">
+        <div class="neo-logo">N</div>
+        <div class="neo-text">NeoGames</div>
+    </div>
+
+    <div class="loading-screen">
+        <div class="game-title">🧠 Code Recall</div>
+        <div class="loading-bar">
+            <div class="loading-fill"></div>
+        </div>
+    </div>
+
+    <div class="main-menu" id="mainMenu">
+        <div class="main-menu-title">🧠 Code Recall</div>
+        <button class="main-menu-btn primary" onclick="startGame()">▶️ Jogar</button>
+        <button class="main-menu-btn" onclick="showCredits()">ℹ️ Créditos</button>
+    </div>
+
+    <button class="menu-btn" onclick="showMainMenu()" style="display:none;" id="menuBtn">🏠 Menu</button>
+
+    <div class="game-container" id="gameContainer">
+        <div class="score-display">
+            <div class="score-label">Sequência</div>
+            <div class="score-value" id="scoreValue">0</div>
+        </div>
+
+        <div class="status-text" id="statusText">Prepare-se...</div>
+        <div class="level-indicator" id="levelIndicator">Grade: 2x2</div>
+
+        <div class="console" id="console">
+            <div class="color-btn blue" data-color="blue"></div>
+            <div class="color-btn red" data-color="red"></div>
+            <div class="color-btn green" data-color="green"></div>
+            <div class="color-btn yellow" data-color="yellow"></div>
+        </div>
+    </div>
+
+    <div class="overlay" id="overlay"></div>
+    <div class="game-over-modal" id="gameOverModal">
+        <div class="modal-title">💀 Game Over</div>
+        <div class="modal-score">Sequência Final: <span id="finalScore">0</span></div>
+        <button class="modal-btn" onclick="restartGame()">🔄 Jogar Novamente</button>
+        <button class="modal-btn" onclick="showMainMenu()">🏠 Menu Principal</button>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>

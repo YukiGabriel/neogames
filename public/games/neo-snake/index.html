@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeoSnake</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 100%);
+            color: white;
+            overflow: hidden;
+        }
+        .splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0066ff 0%, #00d4ff 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 20000;
+            animation: fadeOut 0.8s 3s forwards;
+        }
+        @keyframes fadeOut {
+            to { opacity: 0; pointer-events: none; }
+        }
+        .neo-logo {
+            font-size: 8rem;
+            font-weight: 900;
+            color: white;
+            text-shadow: 0 0 40px rgba(255,255,255,0.8);
+            animation: logoFloat 3s ease-in-out infinite;
+        }
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        .neo-text {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: white;
+            margin-top: 30px;
+            letter-spacing: 8px;
+        }
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 19999;
+            animation: fadeOut 0.5s 4s forwards;
+        }
+        .game-title {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #00ff88;
+            margin-bottom: 30px;
+            animation: slideDown 0.8s 2.5s backwards;
+        }
+        @keyframes slideDown {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .loading-bar {
+            width: 300px;
+            height: 10px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .loading-fill {
+            height: 100%;
+            background: #00ff88;
+            border-radius: 10px;
+            animation: loadProgress 1s 3s forwards;
+            width: 0;
+        }
+        @keyframes loadProgress {
+            to { width: 100%; }
+        }
+        .main-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            opacity: 0;
+            animation: fadeIn 0.5s 4.5s forwards;
+        }
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        .main-menu.hidden { display: none; }
+        .main-menu.visible { opacity: 1; animation: none; }
+        .main-menu-title {
+            font-size: 4rem;
+            font-weight: bold;
+            color: #00ff88;
+            margin-bottom: 50px;
+            text-shadow: 0 0 20px rgba(0,255,136,0.5);
+        }
+        .main-menu-btn {
+            width: 300px;
+            padding: 20px;
+            margin: 10px;
+            background: rgba(0,255,136,0.2);
+            border: 3px solid #00ff88;
+            color: white;
+            font-size: 1.3rem;
+            font-weight: bold;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .main-menu-btn:hover {
+            background: rgba(0,255,136,0.3);
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(0,255,136,0.5);
+        }
+        .main-menu-btn.primary {
+            background: #00ff88;
+            color: #0f0f23;
+        }
+        .game-container {
+            display: none;
+            width: 100vw;
+            height: 100vh;
+            padding: 20px;
+        }
+        .game-container.active { display: flex; flex-direction: column; }
+        @media (max-width: 768px) {
+            .game-container { padding: 10px; }
+        }
+        .hud {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            background: rgba(0,0,0,0.5);
+            border-radius: 15px;
+            margin-bottom: 15px;
+        }
+        @media (max-width: 768px) {
+            .hud {
+                padding: 10px 15px;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+            .hud-item { flex: 1; min-width: 80px; }
+            .hud-label { font-size: 0.75rem; }
+            .hud-value { font-size: 1.2rem; }
+        }
+        .hud-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+        .hud-label { font-size: 0.9rem; color: #aaa; }
+        .hud-value { font-size: 1.5rem; font-weight: bold; color: #00ff88; }
+        .game-area {
+            flex: 1;
+            display: flex;
+            gap: 15px;
+        }
+        @media (max-width: 768px) {
+            .game-area { flex-direction: column; gap: 10px; }
+        }
+        .canvas-container {
+            flex: 1;
+            background: rgba(0,0,0,0.3);
+            border-radius: 15px;
+            border: 3px solid #00ff88;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        #gameCanvas {
+            background: #0a0a1a;
+            border-radius: 10px;
+        }
+        .abilities {
+            width: 200px;
+            background: rgba(0,0,0,0.5);
+            border-radius: 15px;
+            padding: 20px;
+        }
+        @media (max-width: 768px) {
+            .abilities {
+                width: 100%;
+                padding: 10px;
+                display: flex;
+                gap: 10px;
+                align-items: center;
+            }
+            .ability-title { display: none; }
+            .ability-btn {
+                flex: 1;
+                padding: 12px;
+                margin: 0;
+                font-size: 0.9rem;
+            }
+        }
+        .ability-title {
+            font-size: 1.2rem;
+            color: #00ff88;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .ability-btn {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            background: rgba(0,255,136,0.2);
+            border: 2px solid #00ff88;
+            color: white;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+        .ability-btn:hover:not(:disabled) {
+            background: rgba(0,255,136,0.3);
+            transform: scale(1.05);
+        }
+        .ability-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .ability-cooldown {
+            position: absolute;
+            bottom: 5px;
+            right: 10px;
+            font-size: 0.8rem;
+            color: #ff6b6b;
+        }
+        .menu-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            padding: 12px 25px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            border: 2px solid #00ff88;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 1000;
+            transition: all 0.3s;
+        }
+        .menu-btn:hover { background: rgba(0,0,0,0.9); transform: scale(1.05); }
+        .game-over-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.95);
+            padding: 40px;
+            border-radius: 20px;
+            border: 3px solid #00ff88;
+            z-index: 2000;
+            display: none;
+            text-align: center;
+        }
+        .game-over-modal.show { display: block; }
+        .modal-title { font-size: 2.5rem; color: #00ff88; margin-bottom: 20px; }
+        .modal-stats { font-size: 1.2rem; margin: 15px 0; }
+        .modal-btn {
+            padding: 15px 40px;
+            margin: 10px;
+            background: #00ff88;
+            color: #0f0f23;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .modal-btn:hover { transform: scale(1.05); box-shadow: 0 0 20px rgba(0,255,136,0.5); }
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1999;
+            display: none;
+        }
+        .overlay.show { display: block; }
+        .touch-controls {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+        }
+        @media (max-width: 768px) {
+            .touch-controls { display: grid; grid-template-columns: repeat(3, 60px); grid-template-rows: repeat(3, 60px); gap: 5px; }
+        }
+        .touch-btn {
+            background: rgba(0,255,136,0.3);
+            border: 2px solid #00ff88;
+            border-radius: 10px;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .touch-btn:active {
+            background: rgba(0,255,136,0.5);
+            transform: scale(0.95);
+        }
+        .touch-btn.empty { opacity: 0; pointer-events: none; }
+        @media (max-width: 768px) {
+            .main-menu-title { font-size: 2.5rem; }
+            .main-menu-btn { width: 250px; padding: 15px; font-size: 1.1rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="splash-screen">
+        <div class="neo-logo">N</div>
+        <div class="neo-text">NeoGames</div>
+    </div>
+
+    <div class="loading-screen">
+        <div class="game-title">🐍 NeoSnake</div>
+        <div class="loading-bar">
+            <div class="loading-fill"></div>
+        </div>
+    </div>
+
+    <div class="main-menu" id="mainMenu">
+        <div class="main-menu-title">🐍 NeoSnake</div>
+        <button class="main-menu-btn primary" onclick="startGame()">▶️ Jogar</button>
+        <button class="main-menu-btn" onclick="showCredits()">ℹ️ Créditos</button>
+    </div>
+
+    <button class="menu-btn" onclick="showMainMenu()" style="display:none;" id="menuBtn">🏠 Menu</button>
+
+    <div class="touch-controls" id="touchControls">
+        <div class="touch-btn empty"></div>
+        <div class="touch-btn" ontouchstart="handleTouch('up')">↑</div>
+        <div class="touch-btn empty"></div>
+        <div class="touch-btn" ontouchstart="handleTouch('left')">←</div>
+        <div class="touch-btn empty"></div>
+        <div class="touch-btn" ontouchstart="handleTouch('right')">→</div>
+        <div class="touch-btn empty"></div>
+        <div class="touch-btn" ontouchstart="handleTouch('down')">↓</div>
+        <div class="touch-btn empty"></div>
+    </div>
+
+    <div class="game-container" id="gameContainer">
+        <div class="hud">
+            <div class="hud-item">
+                <div class="hud-label">Pontuação</div>
+                <div class="hud-value" id="score">0</div>
+            </div>
+            <div class="hud-item">
+                <div class="hud-label">Tamanho</div>
+                <div class="hud-value" id="length">3</div>
+            </div>
+            <div class="hud-item">
+                <div class="hud-label">Nível</div>
+                <div class="hud-value" id="level">1</div>
+            </div>
+            <div class="hud-item">
+                <div class="hud-label">XP</div>
+                <div class="hud-value" id="xp">0</div>
+            </div>
+        </div>
+
+        <div class="game-area">
+            <div class="canvas-container">
+                <canvas id="gameCanvas"></canvas>
+            </div>
+
+            <div class="abilities">
+                <div class="ability-title">⚡ Habilidades</div>
+                <button class="ability-btn" id="dashBtn" onclick="useDash()">
+                    🚀 Dash
+                    <span class="ability-cooldown" id="dashCooldown"></span>
+                </button>
+                <button class="ability-btn" id="shieldBtn" onclick="useShield()">
+                    🛡️ Escudo
+                    <span class="ability-cooldown" id="shieldCooldown"></span>
+                </button>
+                <button class="ability-btn" id="magnetBtn" onclick="useMagnet()">
+                    🧲 Ímã
+                    <span class="ability-cooldown" id="magnetCooldown"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="overlay" id="overlay"></div>
+    <div class="game-over-modal" id="gameOverModal">
+        <div class="modal-title">💀 Game Over</div>
+        <div class="modal-stats">Pontuação: <span id="finalScore">0</span></div>
+        <div class="modal-stats">Tamanho: <span id="finalLength">0</span></div>
+        <div class="modal-stats">XP Ganho: <span id="finalXP">0</span></div>
+        <button class="modal-btn" onclick="restartGame()">🔄 Jogar Novamente</button>
+        <button class="modal-btn" onclick="showMainMenu()">🏠 Menu Principal</button>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>

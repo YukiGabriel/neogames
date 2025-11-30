@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Potato Clicker</title>
+    <style>
+        :root {
+            --primary: #667eea;
+            --secondary: #764ba2;
+            --accent: #ffd700;
+        }
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        input, textarea {
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+            user-select: text;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: #fff;
+            overflow-x: hidden;
+            transition: background 0.5s;
+        }
+        .container {
+            display: grid;
+            grid-template-columns: 280px 1fr 280px;
+            gap: 15px;
+            padding: 15px;
+            max-width: 1400px;
+            margin: 0 auto;
+            min-height: 100vh;
+        }
+        .panel {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 15px;
+            padding: 15px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.2);
+            overflow-y: auto;
+            max-height: calc(100vh - 30px);
+        }
+        .center {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        h1 {
+            font-size: 2.2rem;
+            text-align: center;
+            margin-bottom: 15px;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.5);
+            background: linear-gradient(45deg, var(--accent), #fff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: glow 2s ease-in-out infinite;
+        }
+        @keyframes glow {
+            0%, 100% { filter: drop-shadow(0 0 5px var(--accent)); }
+            50% { filter: drop-shadow(0 0 20px var(--accent)); }
+        }
+        .stats-box {
+            background: rgba(0,0,0,0.3);
+            padding: 12px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            text-align: center;
+            width: 100%;
+        }
+        .count {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--accent);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        .per-second {
+            font-size: 1rem;
+            color: #90ee90;
+            margin-top: 5px;
+        }
+        .potato-container {
+            position: relative;
+            margin: 15px 0;
+        }
+        .potato {
+            width: 220px;
+            height: 220px;
+            cursor: pointer;
+            transition: transform 0.1s;
+            filter: drop-shadow(0 10px 30px rgba(0,0,0,0.5));
+            font-size: 11rem;
+            -webkit-user-drag: none;
+            -webkit-touch-callout: none;
+        }
+        .potato:hover { transform: scale(1.05) rotate(5deg); }
+        .potato:active { transform: scale(0.95) rotate(-5deg); animation: shake 0.3s; }
+        @keyframes shake {
+            0%, 100% { transform: scale(0.95) rotate(0deg); }
+            25% { transform: scale(0.95) rotate(-10deg); }
+            75% { transform: scale(0.95) rotate(10deg); }
+        }
+        .click-effect {
+            position: absolute;
+            color: var(--accent);
+            font-size: 2.5rem;
+            font-weight: bold;
+            pointer-events: none;
+            animation: float 1s ease-out forwards;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8), 0 0 10px var(--accent);
+            z-index: 999;
+        }
+        @keyframes float {
+            to { transform: translateY(-150px); opacity: 0; }
+        }
+        .section-title {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: var(--accent);
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 8px;
+        }
+        .upgrade {
+            background: rgba(255,255,255,0.1);
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+        .upgrade:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateX(5px) scale(1.02);
+            border-color: var(--accent);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        .upgrade.disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        .upgrade.disabled:hover { transform: none; border-color: transparent; }
+        .upgrade-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        .upgrade-name {
+            font-size: 1rem;
+            font-weight: bold;
+        }
+        .upgrade-cost {
+            color: var(--accent);
+            font-size: 0.95rem;
+            font-weight: bold;
+        }
+        .upgrade-info {
+            font-size: 0.8rem;
+            color: #90ee90;
+        }
+        .skin {
+            display: inline-block;
+            font-size: 3rem;
+            padding: 10px;
+            margin: 5px;
+            cursor: pointer;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.1);
+            transition: all 0.3s;
+            border: 3px solid transparent;
+        }
+        .skin:hover { transform: scale(1.1); background: rgba(255,255,255,0.2); }
+        .skin.active { border-color: var(--accent); background: rgba(255,215,0,0.2); box-shadow: 0 0 20px var(--accent); }
+        .skin.locked {
+            opacity: 0.3;
+            cursor: not-allowed;
+            position: relative;
+        }
+        .skin.locked::after {
+            content: '🔒';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2rem;
+        }
+        .achievement {
+            background: rgba(255,255,255,0.1);
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 2px solid transparent;
+        }
+        .achievement.unlocked {
+            border-color: var(--accent);
+            background: rgba(255,215,0,0.2);
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+        .achievement-icon {
+            font-size: 2rem;
+            filter: grayscale(100%);
+            flex-shrink: 0;
+        }
+        .achievement.unlocked .achievement-icon {
+            filter: grayscale(0%);
+        }
+        .achievement-info {
+            flex: 1;
+        }
+        .achievement-name {
+            font-weight: bold;
+            font-size: 0.95rem;
+        }
+        .achievement-desc {
+            font-size: 0.75rem;
+            color: #ccc;
+        }
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        .tab {
+            flex: 1;
+            padding: 8px;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+        }
+        .tab:hover { background: rgba(255,255,255,0.2); }
+        .tab.active {
+            background: var(--accent);
+            color: #000;
+            border: 2px solid var(--accent);
+            font-weight: bold;
+        }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .prestige-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(45deg, #ff6b6b, #ee5a6f);
+            border: none;
+            color: #fff;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 12px;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: all 0.3s;
+        }
+        .prestige-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(255,107,107,0.5);
+        }
+        .prestige-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .prestige-info {
+            text-align: center;
+            padding: 12px;
+            background: rgba(255,107,107,0.2);
+            border-radius: 10px;
+            margin-bottom: 12px;
+        }
+        .multiplier {
+            font-size: 1.5rem;
+            color: #ff6b6b;
+            font-weight: bold;
+        }
+        .save-btn {
+            width: 100%;
+            padding: 10px;
+            background: rgba(0,212,255,0.3);
+            border: 2px solid #00d4ff;
+            color: #fff;
+            font-size: 0.9rem;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .save-btn:hover { background: rgba(0,212,255,0.5); }
+        .theme-btn {
+            padding: 12px;
+            border: 3px solid transparent;
+            color: #fff;
+            font-size: 0.9rem;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+        .theme-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        }
+        .theme-btn.active {
+            border-color: #fff;
+            box-shadow: 0 0 20px rgba(255,255,255,0.5);
+        }
+        .stat-item {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        .stat-item:hover {
+            background: rgba(255,255,255,0.15);
+            border-color: var(--accent);
+            transform: translateX(5px);
+        }
+        .stat-icon {
+            font-size: 2.5rem;
+            flex-shrink: 0;
+        }
+        .stat-info {
+            flex: 1;
+        }
+        .stat-label {
+            font-size: 0.9rem;
+            color: #ccc;
+            margin-bottom: 5px;
+        }
+        .stat-value {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--accent);
+        }
+        .keybind-btn {
+            flex: 1;
+            padding: 15px;
+            background: rgba(0,212,255,0.3);
+            border: 2px solid #00d4ff;
+            color: #fff;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .keybind-btn:hover {
+            background: rgba(0,212,255,0.5);
+            transform: scale(1.05);
+        }
+        .leaderboard-item {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        .leaderboard-item:hover {
+            background: rgba(255,255,255,0.15);
+            transform: translateX(5px);
+        }
+        .leaderboard-item.current-player {
+            border-color: var(--accent);
+            background: rgba(255,215,0,0.15);
+        }
+        .leaderboard-rank {
+            font-size: 2rem;
+            font-weight: bold;
+            min-width: 50px;
+            text-align: center;
+        }
+        .leaderboard-info {
+            flex: 1;
+        }
+        .leaderboard-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 5px;
+        }
+        .leaderboard-stats {
+            font-size: 0.9rem;
+            color: #999;
+        }
+        @media (max-width: 1200px) {
+            .container {
+                grid-template-columns: 1fr;
+                padding: 10px;
+            }
+            h1 {
+                font-size: 2rem;
+            }
+            .potato {
+                width: 200px;
+                height: 200px;
+                font-size: 10rem;
+            }
+            .panel {
+                padding: 15px;
+            }
+            .tabs {
+                flex-direction: column;
+            }
+            .skin {
+                font-size: 3rem;
+                padding: 10px;
+                margin: 5px;
+            }
+            .upgrade {
+                padding: 12px;
+            }
+            .upgrade-name {
+                font-size: 1rem;
+            }
+        }
+        .splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0066ff 0%, #00d4ff 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 20000;
+            animation: fadeOut 0.8s 3s forwards;
+            overflow: hidden;
+        }
+        .splash-screen::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 20s linear infinite;
+        }
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+        @keyframes fadeOut {
+            to { opacity: 0; pointer-events: none; }
+        }
+        .logo-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: logoEntrance 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        @keyframes logoEntrance {
+            0% { transform: scale(0) rotate(-180deg); opacity: 0; }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+        .neo-logo {
+            font-size: 8rem;
+            font-weight: 900;
+            color: white;
+            text-shadow: 0 0 40px rgba(255,255,255,0.8), 0 0 80px rgba(0,212,255,0.6);
+            position: relative;
+            z-index: 2;
+            animation: logoFloat 3s ease-in-out infinite;
+        }
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        .logo-ring {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            animation: ringPulse 2s ease-in-out infinite;
+        }
+        .logo-ring:nth-child(2) {
+            animation-delay: 0.3s;
+            width: 240px;
+            height: 240px;
+        }
+        .logo-ring:nth-child(3) {
+            animation-delay: 0.6s;
+            width: 280px;
+            height: 280px;
+        }
+        @keyframes ringPulse {
+            0%, 100% { transform: scale(1); opacity: 0.3; }
+            50% { transform: scale(1.1); opacity: 0.1; }
+        }
+        .neo-text {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: white;
+            margin-top: 30px;
+            letter-spacing: 8px;
+            text-transform: uppercase;
+            animation: textSlide 1s 0.5s backwards;
+            text-shadow: 0 2px 20px rgba(0,0,0,0.3);
+        }
+        @keyframes textSlide {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: white;
+            border-radius: 50%;
+            animation: particleFloat 3s ease-in-out infinite;
+        }
+        @keyframes particleFloat {
+            0%, 100% { transform: translateY(0) translateX(0); opacity: 0; }
+            50% { opacity: 1; }
+        }
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 19999;
+            animation: fadeOut 0.5s 4s forwards;
+        }
+        .game-title {
+            font-size: 3rem;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 30px;
+            animation: slideDown 0.8s 2.5s backwards;
+        }
+        @keyframes slideDown {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .loading-bar {
+            width: 300px;
+            height: 10px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 10px;
+            overflow: hidden;
+            animation: slideUp 0.8s 2.8s backwards;
+        }
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .loading-fill {
+            height: 100%;
+            background: white;
+            border-radius: 10px;
+            animation: loadProgress 1s 3s forwards;
+            width: 0;
+        }
+        @keyframes loadProgress {
+            to { width: 100%; }
+        }
+        .loading-text {
+            color: white;
+            margin-top: 20px;
+            font-size: 1.2rem;
+            animation: slideUp 0.8s 3s backwards;
+        }
+        .container {
+            opacity: 0;
+            animation: fadeIn 0.5s 4s forwards;
+        }
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        .menu-btn {
+            position: fixed;
+            top: 20px;
+            padding: 12px 25px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            border: 2px solid var(--accent);
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 1000;
+            transition: all 0.3s;
+        }
+        .menu-btn:hover { background: rgba(0,0,0,0.9); transform: scale(1.05); }
+        .home-btn { left: 20px; }
+        .main-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            opacity: 0;
+            animation: fadeIn 0.5s 4.5s forwards;
+        }
+        .main-menu.hidden { display: none; }
+        .main-menu-title {
+            font-size: 4rem;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 50px;
+            text-shadow: 0 5px 20px rgba(0,0,0,0.5);
+        }
+        .main-menu-btn {
+            width: 300px;
+            padding: 20px;
+            margin: 10px;
+            background: rgba(255,255,255,0.2);
+            border: 3px solid white;
+            color: white;
+            font-size: 1.3rem;
+            font-weight: bold;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
+        }
+        .main-menu-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        .main-menu-btn.primary {
+            background: var(--accent);
+            color: #000;
+            border-color: var(--accent);
+        }
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.5rem;
+                margin-bottom: 10px;
+            }
+            .count {
+                font-size: 1.8rem;
+            }
+            .per-second {
+                font-size: 1rem;
+            }
+            .potato {
+                width: 150px;
+                height: 150px;
+                font-size: 8rem;
+            }
+            .section-title {
+                font-size: 1.2rem;
+            }
+            .achievement {
+                padding: 10px;
+                gap: 10px;
+            }
+            .achievement-icon {
+                font-size: 2rem;
+            }
+            .achievement-name {
+                font-size: 1rem;
+            }
+            .neo-logo { font-size: 5rem; }
+            .neo-text { font-size: 1.8rem; letter-spacing: 4px; }
+            .logo-ring { width: 150px; height: 150px; }
+            .logo-ring:nth-child(2) { width: 180px; height: 180px; }
+            .logo-ring:nth-child(3) { width: 210px; height: 210px; }
+            .neo-text { font-size: 1.5rem; }
+            .game-title { font-size: 2rem; }
+            .loading-bar { width: 200px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="splash-screen">
+        <div class="particles">
+            <div class="particle" style="left: 10%; animation-delay: 0s; animation-duration: 3s;"></div>
+            <div class="particle" style="left: 20%; animation-delay: 0.5s; animation-duration: 3.5s;"></div>
+            <div class="particle" style="left: 30%; animation-delay: 1s; animation-duration: 4s;"></div>
+            <div class="particle" style="left: 40%; animation-delay: 1.5s; animation-duration: 3.2s;"></div>
+            <div class="particle" style="left: 50%; animation-delay: 0.8s; animation-duration: 3.8s;"></div>
+            <div class="particle" style="left: 60%; animation-delay: 1.2s; animation-duration: 3.3s;"></div>
+            <div class="particle" style="left: 70%; animation-delay: 0.3s; animation-duration: 4.2s;"></div>
+            <div class="particle" style="left: 80%; animation-delay: 1.8s; animation-duration: 3.6s;"></div>
+            <div class="particle" style="left: 90%; animation-delay: 0.6s; animation-duration: 3.9s;"></div>
+        </div>
+        <div class="logo-container">
+            <div class="logo-ring"></div>
+            <div class="logo-ring"></div>
+            <div class="logo-ring"></div>
+            <div class="neo-logo">N</div>
+        </div>
+        <div class="neo-text">NeoGames</div>
+    </div>
+
+    <div class="loading-screen">
+        <div class="game-title">🥔 Potato Clicker</div>
+        <div class="loading-bar">
+            <div class="loading-fill"></div>
+        </div>
+        <div class="loading-text">Carregando...</div>
+    </div>
+
+    <div class="main-menu" id="mainMenu">
+        <div class="main-menu-title">🥔 Potato Clicker</div>
+        <button class="main-menu-btn primary" onclick="startGame()">▶️ Jogar</button>
+        <button class="main-menu-btn" onclick="showCredits()">ℹ️ Créditos</button>
+    </div>
+
+    <button class="menu-btn home-btn" onclick="showMainMenu()" style="display:none;" id="menuBtn">🏠 Menu</button>
+
+    <div class="container">
+        <div class="panel">
+            <h2 class="section-title">⚡ Upgrades</h2>
+            <div id="upgrades"></div>
+        </div>
+
+        <div class="panel center">
+            <h1>🥔 Potato Clicker</h1>
+            
+            <div class="stats-box">
+                <div class="count" id="count">0</div>
+                <div class="per-second" id="perSecond">0/seg</div>
+                <div style="margin-top: 10px; color: #ff6b6b; font-weight: bold;" id="multiplier"></div>
+            </div>
+
+            <div class="potato-container">
+                <div class="potato" id="potato">🥔</div>
+            </div>
+
+            <button class="save-btn" onclick="saveGame()">💾 Salvar Jogo</button>
+        </div>
+
+        <div class="panel">
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab('skins')">🎨</button>
+                <button class="tab" onclick="switchTab('achievements')">🏆</button>
+                <button class="tab" onclick="switchTab('leaderboard')">🏆</button>
+                <button class="tab" onclick="switchTab('stats')">📊</button>
+                <button class="tab" onclick="switchTab('prestige')">⭐</button>
+                <button class="tab" onclick="switchTab('settings')">⚙️</button>
+            </div>
+
+            <div id="skins" class="tab-content active">
+                <h2 class="section-title">🎨 Skins</h2>
+                <div id="skinsContainer"></div>
+            </div>
+
+            <div id="achievements" class="tab-content">
+                <h2 class="section-title">🏆 Conquistas</h2>
+                <div id="achievementsContainer"></div>
+            </div>
+
+            <div id="leaderboard" class="tab-content">
+                <h2 class="section-title">🏆 Placar Local</h2>
+                <div style="margin-bottom: 15px; padding: 12px; background: rgba(0,0,0,0.3); border-radius: 10px; display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <div style="font-size: 0.85rem; color: #999;">Seu Nome:</div>
+                        <div style="font-size: 1.2rem; font-weight: bold; color: var(--accent);" id="playerNameDisplay">Jogador</div>
+                    </div>
+                    <button onclick="setPlayerName()" style="padding: 10px 20px; background: var(--accent); color: #000; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">✏️ Editar</button>
+                </div>
+                <div id="leaderboardContainer"></div>
+                
+                <h2 class="section-title" style="margin-top: 30px;">🌍 Placar Global</h2>
+                <div style="margin-bottom: 10px; padding: 10px; background: rgba(0,212,255,0.2); border-radius: 8px; font-size: 0.85rem; color: #ccc;">
+                    🌐 Jogadores de todos os dispositivos
+                </div>
+                <div id="globalLeaderboardContainer"></div>
+            </div>
+
+            <div id="stats" class="tab-content">
+                <h2 class="section-title">📊 Estatísticas</h2>
+                <div id="statsContainer"></div>
+            </div>
+
+            <div id="prestige" class="tab-content">
+                <h2 class="section-title">⭐ Prestígio</h2>
+                <div class="prestige-info">
+                    <div class="multiplier" id="prestigeMultiplier">x1</div>
+                    <div>Multiplicador Atual</div>
+                </div>
+                <div style="margin-bottom: 15px; text-align: center;">
+                    <div style="font-size: 1.2rem; color: var(--accent);">Próximo Prestígio:</div>
+                    <div style="font-size: 1.5rem; font-weight: bold;" id="nextPrestige">x2</div>
+                </div>
+                <button class="prestige-btn" id="prestigeBtn" onclick="doPrestige()">
+                    ⭐ PRESTÍGIO ⭐<br>
+                    <span style="font-size: 0.9rem;">(Requer 10.000.000 batatas)</span>
+                </button>
+            </div>
+            
+            <div id="settings" class="tab-content">
+                <h2 class="section-title">⚙️ Personalização</h2>
+                <div style="margin-bottom: 20px;">
+                    <h3 style="color: var(--accent); margin-bottom: 10px;">🎨 Temas</h3>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+                        <button class="theme-btn active" onclick="changeTheme('purple', this)" style="background: linear-gradient(45deg, #667eea, #764ba2);">Roxo</button>
+                        <button class="theme-btn" onclick="changeTheme('blue', this)" style="background: linear-gradient(45deg, #2193b0, #6dd5ed);">Azul</button>
+                        <button class="theme-btn" onclick="changeTheme('green', this)" style="background: linear-gradient(45deg, #11998e, #38ef7d);">Verde</button>
+                        <button class="theme-btn" onclick="changeTheme('red', this)" style="background: linear-gradient(45deg, #eb3349, #f45c43);">Vermelho</button>
+                        <button class="theme-btn" onclick="changeTheme('orange', this)" style="background: linear-gradient(45deg, #f46b45, #eea849);">Laranja</button>
+                        <button class="theme-btn" onclick="changeTheme('pink', this)" style="background: linear-gradient(45deg, #ff6a88, #ff99ac);">Rosa</button>
+                    </div>
+                </div>
+                <div style="margin-bottom: 20px;">
+                    <h3 style="color: var(--accent); margin-bottom: 10px;">⌨️ Keybind de Clique</h3>
+                    <p style="color: #ccc; font-size: 0.9rem; margin-bottom: 10px;">Defina uma tecla para clicar na batata sem usar o mouse</p>
+                    <div style="display: flex; gap: 10px;">
+                        <button id="keybindBtn" class="keybind-btn" onclick="setKeybind()">Definir Tecla</button>
+                        <button class="keybind-btn" onclick="removeKeybind()" style="background: rgba(255,0,0,0.3);">Remover</button>
+                    </div>
+                </div>
+                <div>
+                    <h3 style="color: var(--accent); margin-bottom: 10px;">🎫 Códigos Promocionais</h3>
+                    <p style="color: #ccc; font-size: 0.9rem; margin-bottom: 10px;">Digite um código para resgatar recompensas</p>
+                    <div style="display: flex; gap: 10px;">
+                        <input id="codeInput" type="text" placeholder="Digite o código..." style="flex: 1; padding: 12px; background: rgba(0,0,0,0.3); border: 2px solid var(--accent); border-radius: 10px; color: #fff; font-size: 1rem;" />
+                        <button class="keybind-btn" onclick="redeemCode()" style="flex: 0 0 120px; background: linear-gradient(45deg, var(--primary), var(--secondary));">Resgatar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>
