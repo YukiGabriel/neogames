@@ -48,7 +48,7 @@ export default function Footer() {
         </div>
 
         <div className={styles.bottom}>
-          <p>&copy; 2024 NeoGames. Todos os direitos reservados.</p>
+          <p>&copy; 2025 NeoGames. Todos os direitos reservados.</p>
           <p className={styles.madeWith}>Feito com 💙 para jogadores</p>
         </div>
       </div>

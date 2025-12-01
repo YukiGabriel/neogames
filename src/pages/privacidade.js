@@ -16,7 +16,7 @@ export default function Privacidade() {
       <main className={styles.main}>
         <div className={styles.container}>
           <h1 className={styles.title}>🛡️ Política de Privacidade</h1>
-          <p className={styles.updated}>Última atualização: 15 de janeiro de 2024</p>
+          <p className={styles.updated}>Última atualização: 15 de janeiro de 2025</p>
 
           <section className={styles.section}>
             <h2>1. Introdução e Nosso Compromisso</h2>

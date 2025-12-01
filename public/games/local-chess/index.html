@@ -236,10 +236,26 @@
             font-weight: bold;
             margin-bottom: 15px;
         }
+        #chessBoard { max-width: 100%; max-height: 100%; width: auto; height: auto; }
         @media (max-width: 1024px) {
             .game-container { flex-direction: column; padding: 10px; }
-            .left-panel, .right-panel { width: 100%; max-height: 150px; overflow-y: auto; }
-            .board-container { flex: 1; }
+            .left-panel, .right-panel { width: 100%; padding: 15px; }
+            .board-container { flex: 1; min-height: 300px; }
+            .main-menu-btn { width: 250px; }
+        }
+        @media (max-width: 768px) {
+            body { overflow-y: auto; }
+            .game-container { height: auto; min-height: 100vh; }
+            .stat-item { font-size: 0.85rem; }
+            .main-menu-title { font-size: 2.5rem; }
+            .main-menu-btn { width: 90%; max-width: 300px; }
+            .neo-logo { font-size: 5rem; }
+            .neo-text { font-size: 1.8rem; }
+        }
+        @media (max-width: 480px) {
+            .game-container { padding: 5px; }
+            .menu-btn { padding: 8px 15px; font-size: 0.9rem; }
+            .main-menu-title { font-size: 2rem; }
         }
     </style>
 </head>

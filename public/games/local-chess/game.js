@@ -3,7 +3,19 @@ const canvas = document.getElementById('chessBoard');
 const ctx = canvas.getContext('2d');
 
 const BOARD_SIZE = 8;
-const TILE_SIZE = canvas.width / BOARD_SIZE;
+let TILE_SIZE = canvas.width / BOARD_SIZE;
+
+function resizeCanvas() {
+    const container = document.querySelector('.board-container');
+    const maxSize = Math.min(container.clientWidth, container.clientHeight, 640) - 20;
+    canvas.width = maxSize;
+    canvas.height = maxSize;
+    TILE_SIZE = canvas.width / BOARD_SIZE;
+    if (board.length > 0) render();
+}
+
+window.addEventListener('resize', resizeCanvas);
+window.addEventListener('orientationchange', () => setTimeout(resizeCanvas, 100));
 
 let board = [];
 let selectedPiece = null;
@@ -58,14 +70,21 @@ function startGame(mode, difficulty) {
     aiDifficulty = difficulty || 'medium';
     
     const menu = document.getElementById('mainMenu');
+    const diffMenu = document.getElementById('difficultyMenu');
+    const gameContainer = document.getElementById('gameContainer');
+    const menuBtn = document.getElementById('menuBtn');
+    
     menu.classList.add('hidden');
     menu.classList.remove('visible');
-    document.getElementById('difficultyMenu').style.display = 'none';
-    document.getElementById('gameContainer').classList.add('active');
-    document.getElementById('menuBtn').style.display = 'block';
+    diffMenu.style.display = 'none';
+    gameContainer.classList.add('active');
+    menuBtn.style.display = 'block';
     
-    initGame();
-    canvas.addEventListener('click', handleClick);
+    requestAnimationFrame(() => {
+        resizeCanvas();
+        initGame();
+        canvas.addEventListener('click', handleClick);
+    });
 }
 
 function showDifficultyMenu() {
@@ -109,8 +128,10 @@ function showCredits() {
 
 function handleClick(e) {
     const rect = canvas.getBoundingClientRect();
-    const x = Math.floor((e.clientX - rect.left) / TILE_SIZE);
-    const y = Math.floor((e.clientY - rect.top) / TILE_SIZE);
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    const x = Math.floor(((e.clientX - rect.left) * scaleX) / TILE_SIZE);
+    const y = Math.floor(((e.clientY - rect.top) * scaleY) / TILE_SIZE);
     
     if (selectedPiece) {
         if (isValidMove(selectedPiece, {x, y})) {

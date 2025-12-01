@@ -16,7 +16,7 @@ export default function Termos() {
       <main className={styles.main}>
         <div className={styles.container}>
           <h1 className={styles.title}>📜 Termos de Uso</h1>
-          <p className={styles.updated}>Última atualização: 15 de janeiro de 2024</p>
+          <p className={styles.updated}>Última atualização: 15 de janeiro de 2025</p>
 
           <section className={styles.section}>
             <h2>1. Aceitação dos Termos</h2>
