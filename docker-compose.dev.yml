@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  # Aplicação Next.js em modo desenvolvimento
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+    environment:
+      - NODE_ENV=development
+      - MONGODB_URI=mongodb://mongo:27017/neogames
+    depends_on:
+      - mongo
+    networks:
+      - neogames-network
+    restart: unless-stopped
+    command: npm run dev
+
+  # MongoDB
+  mongo:
+    image: mongo:7.0
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data-dev:/data/db
+    environment:
+      - MONGO_INITDB_DATABASE=neogames
+    networks:
+      - neogames-network
+    restart: unless-stopped
+
+volumes:
+  mongo-data-dev:
+    driver: local
+
+networks:
+  neogames-network:
+    driver: bridge

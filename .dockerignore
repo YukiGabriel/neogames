@@ -1,0 +1,29 @@
+# Dependências
+node_modules
+npm-debug.log
+
+# Build do Next.js
+.next
+out
+
+# Arquivos de desenvolvimento
+.git
+.gitignore
+README.md
+*.md
+
+# Arquivos de ambiente
+.env
+.env.local
+.env.development
+.env.production
+
+# Arquivos do sistema
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Cache
+.cache

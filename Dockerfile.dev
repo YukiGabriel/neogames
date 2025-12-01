@@ -1,0 +1,15 @@
+# Dockerfile para ambiente de desenvolvimento
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Instalar dependências
+COPY package.json package-lock.json* ./
+RUN npm ci
+
+# Copiar código fonte
+COPY . .
+
+EXPOSE 3000
+
+CMD ["npm", "run", "dev"]
