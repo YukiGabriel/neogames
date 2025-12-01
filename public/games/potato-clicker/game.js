@@ -17,8 +17,8 @@ let leaderboard = JSON.parse(localStorage.getItem('leaderboard') || '[]');
 let globalLeaderboard = [];
 
 // CONFIGURE AQUI: Cole sua API Key e Bin ID do JSONBin.io
-const JSONBIN_API_KEY = '$2a$10$jRuFOHqFOhmq03ZKeRmP0.7Rxgeuy8ADpt8SHAEgiHZhijCw5MAVG';
-const JSONBIN_BIN_ID = '692b4f71ae596e708f78f459';
+const JSONBIN_API_KEY = '$2a$10$hasSmM1JlGKrytK.ci06Y.dOZmhYBiS/gu5W8u/ai.68WLnbE2rDa'; // Substitua pela sua API Key
+const JSONBIN_BIN_ID = '692b4f71ae596e708f78f459'; // Substitua pelo seu Bin ID
 
 const codes = {
     '10BCLICKS': { type: 'clickPower', value: 10000000000, desc: '10B de poder de clique' },
@@ -28,9 +28,7 @@ const codes = {
     'SPEEDUP': { type: 'production', value: 1000000, desc: '1M batatas/seg' },
     'STARTER': { type: 'potatoes', value: 100000, desc: '100K batatas iniciais' },
     'LUCKY7': { type: 'clickPower', value: 7777, desc: '7777 de poder de clique' },
-    'GOLDENPOTATO': { type: 'potatoes', value: 50000000, desc: '50M de batatas' },
-    'ADMIN_CONSOLE': { type: 'admin', value: true, desc: 'Terminal Admin' },
-    'MILOS': { type: 'video', value: '/videos/milos.mp4', desc: 'Vídeo Especial' }
+    'GOLDENPOTATO': { type: 'potatoes', value: 50000000, desc: '50M de batatas' }
 };
 
 const upgrades = [
@@ -314,34 +312,26 @@ function updateLeaderboard() {
 async function saveToGlobalLeaderboard() {
     if (!JSONBIN_API_KEY.includes('EXAMPLE') && !JSONBIN_BIN_ID.includes('6789')) {
         try {
-            console.log('💾 Salvando no placar global...');
             const score = {
                 name: playerName,
-                potatoes: Math.floor(totalPotatoesEarned),
+                potatoes: totalPotatoesEarned,
                 prestige: prestigeLevel,
                 clicks: totalClicks,
                 timestamp: Date.now()
             };
             
-            const getResponse = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`, {
+            const response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`, {
                 headers: { 'X-Master-Key': JSONBIN_API_KEY }
             });
-            
-            if (!getResponse.ok) {
-                console.error('Erro ao buscar dados:', getResponse.status);
-                return false;
-            }
-            
-            const data = await getResponse.json();
+            const data = await response.json();
             let players = data.record.players || [];
-            console.log('📊 Jogadores atuais:', players.length);
             
             players = players.filter(p => p.name !== playerName);
             players.push(score);
             players.sort((a, b) => b.potatoes - a.potatoes);
             players = players.slice(0, 100);
             
-            const putResponse = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, {
+            await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -350,46 +340,28 @@ async function saveToGlobalLeaderboard() {
                 body: JSON.stringify({ players })
             });
             
-            if (!putResponse.ok) {
-                console.error('Erro ao salvar dados:', putResponse.status);
-                return false;
-            }
-            
             globalLeaderboard = players;
-            renderGlobalLeaderboard();
-            console.log('✅ Salvo com sucesso! Total:', players.length);
             return true;
         } catch (error) {
-            console.error('❌ Erro ao salvar no placar global:', error);
+            console.error('Erro ao salvar no placar global:', error);
             return false;
         }
     }
-    console.log('⚠️ API não configurada');
     return false;
 }
 
 async function loadGlobalLeaderboard() {
     if (!JSONBIN_API_KEY.includes('EXAMPLE') && !JSONBIN_BIN_ID.includes('6789')) {
         try {
-            console.log('📥 Carregando placar global...');
             const response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`, {
                 headers: { 'X-Master-Key': JSONBIN_API_KEY }
             });
-            
-            if (!response.ok) {
-                console.error('Erro ao carregar:', response.status);
-                return;
-            }
-            
             const data = await response.json();
             globalLeaderboard = data.record.players || [];
-            console.log('✅ Carregado:', globalLeaderboard.length, 'jogadores');
             renderGlobalLeaderboard();
         } catch (error) {
-            console.error('❌ Erro ao carregar placar global:', error);
+            console.error('Erro ao carregar placar global:', error);
         }
-    } else {
-        console.log('⚠️ API não configurada');
     }
 }
 
@@ -567,7 +539,7 @@ function switchTab(tabName) {
     document.getElementById(tabName).classList.add('active');
 }
 
-function changeTheme(theme, eventTarget) {
+function changeTheme(theme) {
     uiTheme = theme;
     const t = themes[theme];
     document.documentElement.style.setProperty('--primary', t.primary);
@@ -575,7 +547,7 @@ function changeTheme(theme, eventTarget) {
     document.documentElement.style.setProperty('--accent', t.accent);
     localStorage.setItem('uiTheme', theme);
     document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
-    if (eventTarget) eventTarget.classList.add('active');
+    event.target.classList.add('active');
 }
 
 function setKeybind() {
@@ -605,166 +577,6 @@ function removeKeybind() {
     showNotification('⌨️ Keybind removida!');
 }
 
-function openAdminConsole() {
-    const terminal = document.createElement('div');
-    const isMobile = window.innerWidth <= 768;
-    terminal.style.cssText = `position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:${isMobile ? '95vw' : '600px'};max-width:600px;max-height:${isMobile ? '80vh' : '500px'};background:#000;border:3px solid #0f0;border-radius:10px;padding:${isMobile ? '15px' : '20px'};z-index:9999;font-family:monospace;color:#0f0;overflow-y:auto`;
-    terminal.innerHTML = `
-        <div style="display:flex;justify-content:space-between;margin-bottom:15px;border-bottom:2px solid #0f0;padding-bottom:10px">
-            <div style="font-size:1.2rem;font-weight:bold">🔓 ADMIN CONSOLE</div>
-            <button onclick="this.parentElement.parentElement.remove()" style="background:#f00;color:#fff;border:none;padding:5px 15px;cursor:pointer;border-radius:5px">X</button>
-        </div>
-        <div style="margin-bottom:15px;font-size:0.85rem;color:#0f0">Digite comandos abaixo:</div>
-        <div style="position:relative">
-            <input id="adminInput" type="text" placeholder="comando [valor]" style="width:100%;padding:10px;background:#111;border:2px solid #0f0;color:#0f0;font-family:monospace;border-radius:5px;font-size:16px" />
-            <div id="suggestions" style="position:absolute;width:100%;background:#111;border:2px solid #0f0;border-top:none;border-radius:0 0 5px 5px;max-height:150px;overflow-y:auto;display:none;z-index:10000"></div>
-        </div>
-        <div id="adminOutput" style="background:#111;padding:10px;border-radius:5px;min-height:150px;max-height:${isMobile ? '40vh' : '250px'};overflow-y:auto;font-size:0.85rem"></div>
-        <div style="margin-top:10px;font-size:${isMobile ? '0.65rem' : '0.75rem'};color:#0a0;line-height:1.4">
-            <strong>Comandos:</strong><br>
-            set potatoes [valor] | set clicks [valor] | set prestige [valor]<br>
-            set production [valor] | set clickpower [valor]<br>
-            unlock skins | unlock achievements | reset game<br>
-            multiply potatoes [x] | multiply production [x]<br>
-            export save | import save [código]<br>
-            clear leaderboard | god mode | wipe global<br>
-            reset player [nome] | reset all players
-        </div>
-    `;
-    document.body.appendChild(terminal);
-    
-    const input = document.getElementById('adminInput');
-    const output = document.getElementById('adminOutput');
-    const suggestions = document.getElementById('suggestions');
-    
-    const commands = ['set potatoes','set clicks','set prestige','set production','set clickpower','unlock skins','unlock achievements','reset game','reset player','reset all players','multiply potatoes','multiply production','export save','import save','clear leaderboard','clear','god mode','wipe global','help'];
-    
-    input.addEventListener('input', () => {
-        const val = input.value.toLowerCase();
-        if (!val) { suggestions.style.display = 'none'; return; }
-        const matches = commands.filter(c => c.startsWith(val));
-        if (matches.length) {
-            suggestions.innerHTML = matches.map(m => `<div onclick="document.getElementById('adminInput').value='${m}';document.getElementById('suggestions').style.display='none';document.getElementById('adminInput').focus()" style="padding:8px;cursor:pointer;border-bottom:1px solid #0a0" onmouseover="this.style.background='#0a0'" onmouseout="this.style.background=''">$ ${m}</div>`).join('');
-            suggestions.style.display = 'block';
-        } else { suggestions.style.display = 'none'; }
-    });
-    
-    input.addEventListener('blur', () => setTimeout(() => suggestions.style.display = 'none', 200));
-    
-    const log = (msg, color = '#0f0') => {
-        output.innerHTML += `<div style="color:${color};margin:5px 0">> ${msg}</div>`;
-        output.scrollTop = output.scrollHeight;
-    };
-    
-    log('Terminal Admin inicializado', '#ff0');
-    log('Digite "help" para ver comandos', '#0af');
-    
-    input.addEventListener('keydown', (e) => {
-        if (e.key === 'Tab' && suggestions.style.display === 'block') {
-            e.preventDefault();
-            const first = suggestions.querySelector('div');
-            if (first) {
-                input.value = first.textContent.replace('$ ', '');
-                suggestions.style.display = 'none';
-            }
-        }
-        else if (e.key === 'Enter') {
-            const cmd = input.value.trim().toLowerCase().split(' ');
-            const command = cmd[0];
-            const value = parseFloat(cmd[1]) || cmd[1];
-            
-            log(`$ ${input.value}`, '#fff');
-            
-            if (command === 'set') {
-                if (cmd[1] === 'potatoes') { potatoes = value; log(`Batatas: ${value}`, '#0f0'); }
-                else if (cmd[1] === 'clicks') { totalClicks = value; log(`Cliques: ${value}`, '#0f0'); }
-                else if (cmd[1] === 'prestige') { prestigeLevel = value; prestigeMultiplier = value + 1; log(`Prestígio: ${value}`, '#0f0'); }
-                else if (cmd[1] === 'production') { potatoesPerSecond = value; log(`Produção: ${value}/seg`, '#0f0'); }
-                else if (cmd[1] === 'clickpower') { clickPower = value; log(`Poder: ${value}`, '#0f0'); }
-                else log('Parâmetro inválido', '#f00');
-            }
-            else if (command === 'unlock') {
-                if (cmd[1] === 'skins') { skins.forEach(s => s.unlocked = true); renderSkins(); log('Todas skins desbloqueadas', '#0f0'); }
-                else if (cmd[1] === 'achievements') { achievements.forEach(a => a.unlocked = true); renderAchievements(); log('Todas conquistas desbloqueadas', '#0f0'); }
-                else log('Parâmetro inválido', '#f00');
-            }
-            else if (command === 'multiply') {
-                if (cmd[1] === 'potatoes') { potatoes *= value; log(`Batatas multiplicadas por ${value}`, '#0f0'); }
-                else if (cmd[1] === 'production') { potatoesPerSecond *= value; log(`Produção multiplicada por ${value}`, '#0f0'); }
-                else log('Parâmetro inválido', '#f00');
-            }
-            else if (command === 'reset' && cmd[1] === 'game') {
-                localStorage.clear(); location.reload();
-            }
-            else if (command === 'reset' && cmd[1] === 'player' && cmd[2]) {
-                const name = input.value.split(' ').slice(2).join(' ');
-                log('Removendo jogador...', '#ff0');
-                fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`, { headers: { 'X-Master-Key': JSONBIN_API_KEY } })
-                    .then(r => r.json())
-                    .then(data => {
-                        let players = data.record.players || [];
-                        const before = players.length;
-                        players = players.filter(p => p.name !== name);
-                        if (before === players.length) { log(`Jogador "${name}" não encontrado`, '#f00'); return; }
-                        return fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, { method: 'PUT', headers: { 'Content-Type': 'application/json', 'X-Master-Key': JSONBIN_API_KEY }, body: JSON.stringify({ players }) });
-                    })
-                    .then(() => { loadGlobalLeaderboard(); log('Jogador removido!', '#0f0'); })
-                    .catch(() => log('Erro ao conectar', '#f00'));
-            }
-            else if (command === 'reset' && cmd[1] === 'all' && cmd[2] === 'players') {
-                if (confirm('ATENÇÃO: Apagar TODOS os jogadores?')) {
-                    log('Limpando placar...', '#ff0');
-                    fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, { method: 'PUT', headers: { 'Content-Type': 'application/json', 'X-Master-Key': JSONBIN_API_KEY }, body: JSON.stringify({ players: [] }) })
-                        .then(() => { loadGlobalLeaderboard(); log('Placar global limpo!', '#0f0'); })
-                        .catch(() => log('Erro ao conectar', '#f00'));
-                }
-            }
-            else if (command === 'export') {
-                const save = btoa(JSON.stringify({ potatoes, clickPower, prestigeLevel, totalClicks, totalPotatoesEarned }));
-                log(`Código: ${save.substring(0, 50)}...`, '#ff0');
-                navigator.clipboard.writeText(save);
-                log('Copiado para área de transferência', '#0af');
-            }
-            else if (command === 'import') {
-                try {
-                    const data = JSON.parse(atob(value));
-                    Object.assign(window, data);
-                    log('Save importado com sucesso', '#0f0');
-                } catch { log('Código inválido', '#f00'); }
-            }
-            else if (command === 'clear' && cmd[1] === 'leaderboard') {
-                leaderboard = []; localStorage.setItem('leaderboard', '[]'); renderLeaderboard(); log('Placar local limpo', '#0f0');
-            }
-            else if (command === 'clear' && !cmd[1]) {
-                output.innerHTML = '';
-            }
-            else if (command === 'wipe' && cmd[1] === 'global') {
-                log('Limpando placar global...', '#ff0');
-                fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, { method: 'PUT', headers: { 'Content-Type': 'application/json', 'X-Master-Key': JSONBIN_API_KEY }, body: JSON.stringify({ players: [] }) })
-                    .then(() => { loadGlobalLeaderboard(); log('Placar global limpo!', '#0f0'); })
-                    .catch(() => log('Erro ao conectar', '#f00'));
-            }
-            else if (command === 'god') {
-                potatoes = 1e15; clickPower = 1e12; potatoesPerSecond = 1e12; prestigeLevel = 100; prestigeMultiplier = 101;
-                skins.forEach(s => s.unlocked = true); achievements.forEach(a => a.unlocked = true);
-                log('GOD MODE ATIVADO', '#ff0');
-            }
-            else if (command === 'help') {
-                log('Comandos disponíveis listados abaixo', '#0af');
-            }
-            else {
-                log('Comando não reconhecido', '#f00');
-            }
-            
-            updateDisplay();
-            renderUpgrades();
-            input.value = '';
-        }
-    });
-    
-    input.focus();
-}
-
 function redeemCode() {
     const input = document.getElementById('codeInput');
     const code = input.value.trim().toUpperCase();
@@ -774,7 +586,7 @@ function redeemCode() {
         return;
     }
     
-    if (code !== 'ADMIN_CONSOLE' && code !== 'MILOS' && usedCodes.includes(code)) {
+    if (usedCodes.includes(code)) {
         showNotification('❌ Código já usado!');
         input.value = '';
         return;
@@ -789,14 +601,6 @@ function redeemCode() {
     const reward = codes[code];
     
     switch(reward.type) {
-        case 'admin':
-            openAdminConsole();
-            showNotification('🔓 Terminal Admin aberto!');
-            break;
-        case 'video':
-            showVideoModal(reward.value);
-            showNotification('🎬 Vídeo Especial Desbloqueado!');
-            break;
         case 'clickPower':
             clickPower += reward.value;
             break;
@@ -817,53 +621,14 @@ function redeemCode() {
             break;
     }
     
-    if (code !== 'ADMIN_CONSOLE' && code !== 'MILOS') {
-        usedCodes.push(code);
-        localStorage.setItem('usedCodes', JSON.stringify(usedCodes));
-    }
+    usedCodes.push(code);
+    localStorage.setItem('usedCodes', JSON.stringify(usedCodes));
     
-    if (reward.type !== 'admin' && reward.type !== 'video') {
-        showNotification(`✅ ${reward.desc} resgatado!`);
-    }
+    showNotification(`✅ ${reward.desc} resgatado!`);
     input.value = '';
     updateDisplay();
     renderUpgrades();
     checkAchievements();
-}
-
-function showVideoModal(videoUrl) {
-    const modal = document.createElement('div');
-    modal.style.cssText = `position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);display:flex;align-items:center;justify-content:center;z-index:10000;animation:fadeIn 0.3s`;
-    
-    modal.innerHTML = `
-        <div style="text-align:center;color:#fff;">
-            <h1 style="font-size:3rem;margin-bottom:30px;animation:pulse 1s infinite;">VOCÊ ENCONTROU O MILOS!!</h1>
-            <div id="countdown" style="font-size:8rem;font-weight:bold;color:#ffd700;">3</div>
-        </div>
-    `;
-    
-    document.body.appendChild(modal);
-    
-    let count = 3;
-    const countdownEl = document.getElementById('countdown');
-    const interval = setInterval(() => {
-        count--;
-        if (count > 0) {
-            countdownEl.textContent = count;
-        } else {
-            clearInterval(interval);
-            modal.innerHTML = `
-                <div style="position:relative;width:90%;max-width:900px;background:#000;border-radius:15px;padding:20px;box-shadow:0 20px 60px rgba(0,0,0,0.8);">
-                    <button onclick="this.parentElement.parentElement.remove()" style="position:absolute;top:10px;right:10px;background:#f00;color:#fff;border:none;padding:10px 20px;border-radius:8px;font-size:1.2rem;font-weight:bold;cursor:pointer;z-index:10001;">✕</button>
-                    <h2 style="color:#fff;text-align:center;margin-bottom:20px;font-size:2rem;">🎬 Vídeo Especial MILOS</h2>
-                    <video width="100%" controls autoplay style="border-radius:10px;max-height:70vh;">
-                        <source src="${videoUrl}" type="video/mp4">
-                        Seu navegador não suporta vídeos.
-                    </video>
-                </div>
-            `;
-        }
-    }, 1000);
 }
 
 function showNotification(msg) {
@@ -872,60 +637,6 @@ function showNotification(msg) {
     n.textContent = msg;
     document.body.appendChild(n);
     setTimeout(() => n.remove(), 3000);
-}
-
-function startGame() {
-    document.getElementById('mainMenu').classList.add('hidden');
-    document.getElementById('menuBtn').style.display = 'block';
-    
-    potatoes = 0;
-    potatoesPerSecond = 0;
-    clickPower = 1;
-    prestigeLevel = 0;
-    prestigeMultiplier = 1;
-    totalClicks = 0;
-    totalPotatoesEarned = 0;
-    gameStartTime = Date.now();
-    usedCodes = [];
-    
-    upgrades.forEach(u => { u.owned = 0; u.cost = u.baseCost; });
-    clickUpgrades.forEach(u => { u.owned = 0; u.cost = u.baseCost; });
-    skins.forEach((s, i) => s.unlocked = i === 0);
-    achievements.forEach(a => a.unlocked = false);
-    
-    currentSkin = '🥔';
-    potatoEl.textContent = currentSkin;
-    
-    updateDisplay();
-    renderUpgrades();
-    renderSkins();
-    renderAchievements();
-    renderStats();
-}
-
-function showMainMenu() {
-    document.getElementById('mainMenu').classList.remove('hidden');
-    document.getElementById('menuBtn').style.display = 'none';
-    saveGame();
-}
-
-function showCredits() {
-    const modal = document.createElement('div');
-    modal.style.cssText = `position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:white;padding:40px;border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,0.5);z-index:10001;text-align:center;color:#333;max-width:400px;`;
-    modal.innerHTML = `
-        <h2 style="color:var(--primary);margin-bottom:20px;font-size:2rem;">🥔 Potato Clicker</h2>
-        <p style="margin:15px 0;font-size:1.1rem;">Desenvolvido para <strong>NeoGames</strong></p>
-        <p style="margin:15px 0;color:#666;">Um jogo idle clicker viciante com prestígio, conquistas e muito mais!</p>
-        <button onclick="this.parentElement.remove();document.getElementById('creditsOverlay').remove()" style="margin-top:20px;padding:12px 30px;background:var(--primary);color:white;border:none;border-radius:10px;font-size:1rem;font-weight:bold;cursor:pointer;">Fechar</button>
-    `;
-    
-    const overlay = document.createElement('div');
-    overlay.id = 'creditsOverlay';
-    overlay.style.cssText = `position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);z-index:10000;`;
-    overlay.onclick = () => { modal.remove(); overlay.remove(); };
-    
-    document.body.appendChild(overlay);
-    document.body.appendChild(modal);
 }
 
 function saveGame() {
@@ -1002,7 +713,7 @@ renderAchievements();
 renderStats();
 renderLeaderboard();
 loadGlobalLeaderboard();
-changeTheme(uiTheme, null);
+changeTheme(uiTheme);
 if (clickKeybind) {
     document.getElementById('keybindBtn').textContent = `Tecla: ${clickKeybind.toUpperCase()}`;
 }
