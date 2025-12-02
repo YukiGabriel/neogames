@@ -58,6 +58,30 @@ export const games = [
     embedUrl: "/games/code-recall/index.html",
     plays: 0,
     featured: true
+  },
+  {
+    id: 6,
+    title: "Patience",
+    slug: "patience",
+    category: "Quebra-cabeça",
+    thumbnail: "/thumbnails/patience_estabilidade_quantica.jpg",
+    description: "Estabilidade Quântica! Mantenha o núcleo no centro resistindo a forças externas. Controle fino e timing são essenciais.",
+    instructions: "Pressione e segure para estabilizar o núcleo. Mantenha-o na zona central pelo maior tempo possível. Cuidado com as forças quânticas!",
+    embedUrl: "/games/patience/index.html",
+    plays: 0,
+    featured: true
+  },
+  {
+    id: 7,
+    title: "NeoGoal",
+    slug: "neogoal",
+    category: "Esportes",
+    thumbnail: "/thumbnails/neogoal.jpg",
+    description: "Esporte estratégico 1v1! Escolha sua classe, use cartas táticas e domine campos dinâmicos. Física de precisão com profundidade tática.",
+    instructions: "Escolha uma classe (Acelerador/Tanque/Tático). Arraste da bola para mirar e ajustar potência. Use cartas táticas gastando energia. Primeiro a 3 gols vence!",
+    embedUrl: "/games/neogoal/index.html",
+    plays: 0,
+    featured: true
   }
 ];
 

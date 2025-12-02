@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patience - NeoGames</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(135deg, #0a0a1e 0%, #1a1a3e 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Segoe UI', sans-serif;
+            overflow: hidden;
+        }
+        #splash {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0066ff 0%, #00d4ff 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: fadeOut 0.8s 3s forwards;
+        }
+        @keyframes fadeOut {
+            to { opacity: 0; pointer-events: none; }
+        }
+        .logo { font-size: 120px; font-weight: 900; color: white; text-shadow: 0 0 40px rgba(255,255,255,0.8); animation: logoFloat 3s ease-in-out infinite; }
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .gameTitle { font-size: 48px; font-weight: 700; color: white; margin-top: 30px; opacity: 0; animation: titleFade 1s 3s forwards; }
+        @keyframes titleFade {
+            to { opacity: 1; }
+        }
+        .loadingBar { width: 400px; height: 8px; background: rgba(255,255,255,0.2); border-radius: 4px; margin-top: 30px; overflow: hidden; opacity: 0; animation: titleFade 1s 3s forwards; }
+        .loadingFill { height: 100%; background: white; border-radius: 4px; animation: loading 1s 3s forwards; width: 0; }
+        @keyframes loading {
+            to { width: 100%; }
+        }
+        #gameContainer {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            animation: fadeIn 0.5s 4s forwards;
+        }
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        #ui {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 40px;
+            color: white;
+            font-size: 24px;
+            font-weight: 700;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            z-index: 10;
+        }
+        .stat { text-align: center; }
+        .statValue { font-size: 36px; color: #00d4ff; }
+        #forceBar {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 30px;
+            height: 300px;
+            background: rgba(0,0,0,0.5);
+            border-radius: 15px;
+            border: 2px solid rgba(0,212,255,0.3);
+            overflow: hidden;
+        }
+        #forceFill {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            background: linear-gradient(to top, #00d4ff, #0066ff);
+            transition: height 0.1s;
+        }
+        #streak {
+            position: absolute;
+            top: 100px;
+            left: 20px;
+            color: #ffd700;
+            font-size: 20px;
+            font-weight: 700;
+            text-shadow: 0 0 10px rgba(255,215,0,0.5);
+        }
+        #canvas {
+            border-radius: 20px;
+            box-shadow: 0 0 60px rgba(0,212,255,0.3), 0 0 100px rgba(0,102,255,0.2);
+        }
+        #gameOver {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.95);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            display: none;
+            z-index: 20;
+            border: 3px solid #00d4ff;
+        }
+        #gameOver h2 { color: #00d4ff; font-size: 48px; margin-bottom: 20px; }
+        #gameOver p { color: white; font-size: 24px; margin: 10px 0; }
+        .fragment {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background: #ffd700;
+            border-radius: 50%;
+            box-shadow: 0 0 20px rgba(255,215,0,0.8);
+            animation: fragmentPulse 1s infinite;
+        }
+        @keyframes fragmentPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+        }
+        .btn {
+            background: linear-gradient(135deg, #0066ff, #00d4ff);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 20px;
+            font-weight: 700;
+            border-radius: 30px;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.3s;
+        }
+        .btn:hover { transform: scale(1.05); box-shadow: 0 5px 20px rgba(0,212,255,0.5); }
+        #instructions {
+            position: absolute;
+            bottom: 30px;
+            color: rgba(255,255,255,0.7);
+            font-size: 18px;
+            text-align: center;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+        @media (max-width: 768px) {
+            .logo { font-size: 80px; }
+            .gameTitle { font-size: 32px; }
+            .loadingBar { width: 250px; }
+            #ui { gap: 20px; font-size: 18px; top: 10px; }
+            .statValue { font-size: 24px; }
+            #forceBar { width: 20px; height: 200px; right: 10px; }
+            #streak { font-size: 16px; top: 80px; left: 10px; }
+            #instructions { font-size: 14px; bottom: 10px; padding: 0 10px; }
+            #gameOver { padding: 30px; max-width: 90%; }
+            #gameOver h2 { font-size: 32px; }
+            #gameOver p { font-size: 18px; }
+            .btn { padding: 12px 30px; font-size: 16px; }
+        }
+        @media (max-width: 480px) {
+            #ui { flex-direction: column; gap: 10px; align-items: center; }
+            .stat { font-size: 14px; }
+            .statValue { font-size: 20px; }
+            #forceBar { height: 150px; }
+            #streak { font-size: 14px; }
+        }
+    </style>
+</head>
+<body>
+    <div id="splash">
+        <div class="logo">N</div>
+        <div class="gameTitle">Patience</div>
+        <div class="loadingBar"><div class="loadingFill"></div></div>
+    </div>
+
+    <div id="gameContainer">
+        <div id="ui">
+            <div class="stat">
+                <div>Tempo</div>
+                <div class="statValue" id="time">0.0s</div>
+            </div>
+            <div class="stat">
+                <div>Melhor</div>
+                <div class="statValue" id="best">0.0s</div>
+            </div>
+            <div class="stat">
+                <div>Estabilidade</div>
+                <div class="statValue" id="stability">100%</div>
+            </div>
+        </div>
+
+        <canvas id="canvas"></canvas>
+
+        <div id="forceBar">
+            <div id="forceFill" style="height: 0%"></div>
+        </div>
+
+        <div id="streak">🔥 Sequência: <span id="streakValue">0</span></div>
+
+        <div id="instructions">
+            Pressione e segure para estabilizar o núcleo<br>
+            Mantenha-o no centro pelo maior tempo possível
+        </div>
+
+        <div id="gameOver">
+            <h2>💫 Fim da Estabilidade</h2>
+            <p>Tempo: <span id="finalTime">0.0</span>s</p>
+            <p>Melhor: <span id="finalBest">0.0</span>s</p>
+            <button class="btn" onclick="game.restart()">🔄 Tentar Novamente</button>
+        </div>
+    </div>
+
+    <script src="/saveSystem.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>

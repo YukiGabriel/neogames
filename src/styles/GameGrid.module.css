@@ -21,6 +21,7 @@
   color: #fff;
   position: relative;
   display: inline-block;
+  text-shadow: 0 2px 10px rgba(0,102,255,0.3);
 }
 
 .title::after {
@@ -30,17 +31,26 @@
   left: 0;
   width: 60px;
   height: 4px;
-  background: linear-gradient(90deg, #0066ff, #00d4ff);
+  background: linear-gradient(90deg, #0066ff, #00d4ff, #0066ff);
   border-radius: 2px;
-  animation: expandWidth 0.8s ease-out;
+  animation: expandWidth 0.8s ease-out, glowPulse 2s ease-in-out infinite;
+  background-size: 200% 100%;
+  box-shadow: 0 0 10px rgba(0,212,255,0.5);
 }
 
 @keyframes expandWidth {
-  from {
-    width: 0;
+  from { width: 0; opacity: 0; }
+  to { width: 60px; opacity: 1; }
+}
+
+@keyframes glowPulse {
+  0%, 100% { 
+    box-shadow: 0 0 10px rgba(0,212,255,0.5);
+    background-position: 0% 50%;
   }
-  to {
-    width: 60px;
+  50% { 
+    box-shadow: 0 0 20px rgba(0,212,255,0.8), 0 0 30px rgba(0,102,255,0.4);
+    background-position: 100% 50%;
   }
 }
 

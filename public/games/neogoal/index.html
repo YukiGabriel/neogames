@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeoGoal - NeoGames</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(135deg, #0a1a0a 0%, #1a3a1a 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Segoe UI', sans-serif;
+            overflow: hidden;
+        }
+        #splash {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0066ff 0%, #00d4ff 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: fadeOut 0.8s 3s forwards;
+        }
+        @keyframes fadeOut {
+            to { opacity: 0; pointer-events: none; }
+        }
+        .logo { font-size: 120px; font-weight: 900; color: white; text-shadow: 0 0 40px rgba(255,255,255,0.8); animation: logoFloat 3s ease-in-out infinite; }
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .gameTitle { font-size: 48px; font-weight: 700; color: white; margin-top: 30px; opacity: 0; animation: titleFade 1s 3s forwards; }
+        @keyframes titleFade {
+            to { opacity: 1; }
+        }
+        .loadingBar { width: 400px; height: 8px; background: rgba(255,255,255,0.2); border-radius: 4px; margin-top: 30px; overflow: hidden; opacity: 0; animation: titleFade 1s 3s forwards; }
+        .loadingFill { height: 100%; background: white; border-radius: 4px; animation: loading 1s 3s forwards; width: 0; }
+        @keyframes loading {
+            to { width: 100%; }
+        }
+        #gameContainer {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            animation: fadeIn 0.5s 4s forwards;
+        }
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        #classSelect {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.95);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            z-index: 100;
+            border: 3px solid #00d4ff;
+        }
+        #classSelect h2 { color: #00d4ff; font-size: 36px; margin-bottom: 30px; }
+        #modeSelect {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.95);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            z-index: 100;
+            border: 3px solid #00d4ff;
+        }
+        #modeSelect h2 { color: #00d4ff; font-size: 36px; margin-bottom: 30px; }
+        #difficultySelect {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.95);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            z-index: 100;
+            border: 3px solid #00d4ff;
+        }
+        #difficultySelect h2 { color: #00d4ff; font-size: 36px; margin-bottom: 30px; }
+        .classCard {
+            display: inline-block;
+            width: 200px;
+            margin: 10px;
+            padding: 20px;
+            background: linear-gradient(135deg, #1a1a3e, #2a2a5e);
+            border: 2px solid #0066ff;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .classCard:hover { transform: scale(1.05); border-color: #00d4ff; box-shadow: 0 0 20px rgba(0,212,255,0.5); }
+        .classCard h3 { color: #00d4ff; font-size: 24px; margin-bottom: 10px; }
+        .classCard p { color: white; font-size: 14px; line-height: 1.5; }
+        #ui {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 30px;
+            color: white;
+            font-size: 20px;
+            font-weight: 700;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            z-index: 10;
+        }
+        .stat { text-align: center; }
+        .statValue { font-size: 28px; color: #00ff88; }
+        #energyBar {
+            position: absolute;
+            bottom: 150px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 300px;
+            height: 20px;
+            background: rgba(0,0,0,0.5);
+            border-radius: 10px;
+            border: 2px solid rgba(0,212,255,0.3);
+            overflow: hidden;
+        }
+        #energyFill {
+            height: 100%;
+            background: linear-gradient(to right, #0066ff, #00d4ff);
+            transition: width 0.3s;
+        }
+        #cards {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+        }
+        .card {
+            width: 100px;
+            padding: 10px;
+            background: linear-gradient(135deg, #1a1a3e, #2a2a5e);
+            border: 2px solid #0066ff;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        .card:hover { transform: translateY(-5px); border-color: #00d4ff; box-shadow: 0 5px 20px rgba(0,212,255,0.5); }
+        .card.disabled { opacity: 0.3; cursor: not-allowed; }
+        .card.disabled:hover { transform: none; box-shadow: none; }
+        .cardName { color: #00d4ff; font-size: 14px; font-weight: 700; margin-bottom: 5px; }
+        .cardCost { color: #ffd700; font-size: 12px; }
+        #canvas {
+            border-radius: 20px;
+            box-shadow: 0 0 60px rgba(0,255,136,0.3), 0 0 100px rgba(0,102,255,0.2);
+        }
+        #powerBar {
+            position: absolute;
+            left: 50%;
+            bottom: 200px;
+            transform: translateX(-50%);
+            width: 400px;
+            height: 30px;
+            background: rgba(0,0,0,0.7);
+            border-radius: 15px;
+            border: 2px solid #00d4ff;
+            overflow: hidden;
+            display: none;
+        }
+        #powerFill {
+            height: 100%;
+            background: linear-gradient(to right, #00ff88, #ffff00, #ff0000);
+            width: 0%;
+            transition: width 0.05s linear;
+        }
+        #turnIndicator {
+            position: absolute;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #00ff88;
+            font-size: 32px;
+            font-weight: 900;
+            text-shadow: 0 0 20px rgba(0,255,136,0.8);
+            animation: pulse 1s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: translateX(-50%) scale(1); }
+            50% { transform: translateX(-50%) scale(1.1); }
+        }
+        #gameOver {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.95);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            display: none;
+            z-index: 20;
+            border: 3px solid #00d4ff;
+        }
+        #gameOver h2 { color: #00d4ff; font-size: 48px; margin-bottom: 20px; }
+        #gameOver p { color: white; font-size: 24px; margin: 10px 0; }
+        .btn {
+            background: linear-gradient(135deg, #0066ff, #00d4ff);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 20px;
+            font-weight: 700;
+            border-radius: 30px;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.3s;
+        }
+        .btn:hover { transform: scale(1.05); box-shadow: 0 5px 20px rgba(0,212,255,0.5); }
+        @media (max-width: 768px) {
+            .logo { font-size: 80px; }
+            .gameTitle { font-size: 32px; }
+            .loadingBar { width: 250px; }
+            #classSelect, #modeSelect, #difficultySelect { padding: 20px; max-width: 90%; }
+            #classSelect h2, #modeSelect h2, #difficultySelect h2 { font-size: 28px; margin-bottom: 20px; }
+            .classCard { width: 100%; max-width: 280px; margin: 10px auto; padding: 15px; display: block; }
+            .classCard h3 { font-size: 20px; }
+            .classCard p { font-size: 13px; }
+            #ui { gap: 15px; font-size: 16px; top: 10px; }
+            .statValue { font-size: 20px; }
+            #energyBar { width: 200px; bottom: 100px; height: 15px; }
+            #cards { flex-wrap: wrap; max-width: 95%; bottom: 10px; gap: 8px; }
+            .card { width: 70px; padding: 8px; }
+            .cardName { font-size: 12px; }
+            .cardCost { font-size: 10px; }
+            #powerBar { width: 90%; max-width: 350px; bottom: 150px; height: 25px; }
+            #turnIndicator { font-size: 24px; top: 80px; }
+            #gameOver { padding: 30px; max-width: 90%; }
+            #gameOver h2 { font-size: 36px; }
+            #gameOver p { font-size: 20px; }
+            .btn { padding: 12px 30px; font-size: 18px; }
+        }
+        @media (max-width: 480px) {
+            #classSelect h2, #modeSelect h2, #difficultySelect h2 { font-size: 24px; }
+            .classCard { padding: 12px; }
+            .classCard h3 { font-size: 18px; }
+            .classCard p { font-size: 12px; }
+            #ui { flex-direction: column; gap: 8px; top: 5px; }
+            .stat { font-size: 14px; }
+            .statValue { font-size: 18px; }
+            #energyBar { width: 150px; bottom: 80px; }
+            #cards { gap: 5px; }
+            .card { width: 60px; padding: 6px; }
+            .cardName { font-size: 11px; }
+            #turnIndicator { font-size: 20px; top: 100px; }
+            #gameOver h2 { font-size: 28px; }
+            #gameOver p { font-size: 18px; }
+            .btn { padding: 10px 25px; font-size: 16px; }
+        }
+    </style>
+</head>
+<body>
+    <div id="splash">
+        <div class="logo">N</div>
+        <div class="gameTitle">NeoGoal</div>
+        <div class="loadingBar"><div class="loadingFill"></div></div>
+    </div>
+
+    <div id="gameContainer">
+        <div id="classSelect">
+            <h2>⚽ Escolha sua Classe</h2>
+            <div class="classCard" onclick="game.selectClass('dash')">
+                <h3>⚡ Acelerador</h3>
+                <p>+15% velocidade após ricochete. Estilo arriscado e imprevisível.</p>
+            </div>
+            <div class="classCard" onclick="game.selectClass('anchor')">
+                <h3>🛡️ Tanque</h3>
+                <p>Para 20% mais rápido. Controle e defesa estratégica.</p>
+            </div>
+            <div class="classCard" onclick="game.selectClass('surveyor')">
+                <h3>🎯 Tático</h3>
+                <p>Mira 50% mais longa. Precisão e planejamento.</p>
+            </div>
+        </div>
+        
+        <div id="modeSelect" style="display: none;">
+            <h2>🎮 Modo de Jogo</h2>
+            <div class="classCard" onclick="game.selectMode('ai')">
+                <h3>🤖 vs IA</h3>
+                <p>Jogue contra a inteligência artificial. Escolha a dificuldade.</p>
+            </div>
+            <div class="classCard" onclick="game.selectMode('local')">
+                <h3>👥 2 Jogadores</h3>
+                <p>Jogue localmente com um amigo. Turnos alternados.</p>
+            </div>
+        </div>
+        
+        <div id="difficultySelect" style="display: none;">
+            <h2>🎯 Dificuldade da IA</h2>
+            <div class="classCard" onclick="game.selectDifficulty('easy')">
+                <h3>🟢 Fácil</h3>
+                <p>IA com 65% precisão. Ideal para iniciantes.</p>
+            </div>
+            <div class="classCard" onclick="game.selectDifficulty('medium')">
+                <h3>🟡 Médio</h3>
+                <p>IA com 80% precisão. Desafio equilibrado.</p>
+            </div>
+            <div class="classCard" onclick="game.selectDifficulty('hard')">
+                <h3>🟠 Difícil</h3>
+                <p>IA com 92% precisão. Para jogadores experientes.</p>
+            </div>
+            <div class="classCard" onclick="game.selectDifficulty('expert')">
+                <h3>🔴 Expert</h3>
+                <p>IA com 98% precisão. Desafio extremo!</p>
+            </div>
+        </div>
+
+        <div id="ui">
+            <div class="stat">
+                <div>Você</div>
+                <div class="statValue" id="p1Score">0</div>
+            </div>
+            <div class="stat">
+                <div>IA</div>
+                <div class="statValue" id="p2Score">0</div>
+            </div>
+        </div>
+
+        <div id="turnIndicator">SEU TURNO</div>
+
+        <canvas id="canvas"></canvas>
+
+        <div id="powerBar">
+            <div id="powerFill"></div>
+        </div>
+
+        <div id="energyBar">
+            <div id="energyFill" style="width: 100%"></div>
+        </div>
+
+        <div id="cards"></div>
+
+        <div id="gameOver">
+            <h2 id="winnerText">🏆 Vitória!</h2>
+            <p>Placar: <span id="finalScore">0 - 0</span></p>
+            <button class="btn" onclick="game.restart()">🔄 Jogar Novamente</button>
+            <button class="btn" onclick="window.parent.location.href='/'">🏠 Menu</button>
+        </div>
+    </div>
+
+    <script src="/saveSystem.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>

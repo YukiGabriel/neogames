@@ -30,7 +30,7 @@ export default function Footer() {
           <div className={styles.section}>
             <h4>Sobre</h4>
             <ul className={styles.links}>
-              <li><a href="#">Sobre Nós</a></li>
+              <li><a href="/sobre">Sobre Nós</a></li>
               <li><a href="#">Contato</a></li>
               <li><a href="#">Anuncie</a></li>
               <li><a href="#">Blog</a></li>
