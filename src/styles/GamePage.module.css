@@ -48,6 +48,7 @@
   font-weight: 600;
   font-size: 1rem;
   transition: background 0.3s;
+  z-index: 10;
 }
 
 .fullscreenBtn:hover {

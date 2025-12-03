@@ -835,6 +835,14 @@
             <div id="settings" class="tab-content">
                 <h2 class="section-title">⚙️ Personalização</h2>
                 <div style="margin-bottom: 20px;">
+                    <h3 style="color: var(--accent); margin-bottom: 10px;">🌍 Idioma / Language</h3>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px;">
+                        <button class="theme-btn" onclick="changeGameLanguage('pt')" id="langPT" style="background: linear-gradient(45deg, #009c3b, #ffdf00);">🇧🇷 PT</button>
+                        <button class="theme-btn" onclick="changeGameLanguage('en')" id="langEN" style="background: linear-gradient(45deg, #b22234, #3c3b6e);">🇺🇸 EN</button>
+                        <button class="theme-btn" onclick="changeGameLanguage('es')" id="langES" style="background: linear-gradient(45deg, #c60b1e, #ffc400);">🇪🇸 ES</button>
+                    </div>
+                </div>
+                <div style="margin-bottom: 20px;">
                     <h3 style="color: var(--accent); margin-bottom: 10px;">🎨 Temas</h3>
                     <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
                         <button class="theme-btn active" onclick="changeTheme('purple', this)" style="background: linear-gradient(45deg, #667eea, #764ba2);">Roxo</button>
@@ -866,6 +874,7 @@
     </div>
 
     <script src="/saveSystem.js"></script>
+    <script src="translations.js"></script>
     <script src="game.js"></script>
 </body>
 </html>

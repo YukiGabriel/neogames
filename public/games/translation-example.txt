@@ -1,0 +1,112 @@
+EXEMPLO DE COMO ADICIONAR TRADUÇÃO AOS JOGOS
+==============================================
+
+1. Adicione este código no início do arquivo game.js de cada jogo:
+
+// Sistema de tradução
+let currentLang = 'pt';
+const translations = {
+  pt: {
+    // Adicione as traduções em português aqui
+    menu: "Menu",
+    play: "Jogar",
+    score: "Pontuação",
+    gameOver: "Fim de Jogo"
+  },
+  en: {
+    // Adicione as traduções em inglês aqui
+    menu: "Menu",
+    play: "Play",
+    score: "Score",
+    gameOver: "Game Over"
+  },
+  es: {
+    // Adicione as traduções em espanhol aqui
+    menu: "Menú",
+    play: "Jugar",
+    score: "Puntuación",
+    gameOver: "Fin del Juego"
+  }
+};
+
+function t(key) {
+  return translations[currentLang][key] || key;
+}
+
+// Listener para mudanças de idioma
+window.addEventListener('message', (event) => {
+  if (event.data.type === 'CHANGE_LANGUAGE') {
+    currentLang = event.data.language;
+    updateGameLanguage();
+  }
+});
+
+function updateGameLanguage() {
+  // Atualize todos os textos do jogo aqui
+  // Exemplo:
+  // document.getElementById('menuBtn').textContent = t('menu');
+  // document.getElementById('playBtn').textContent = t('play');
+}
+
+2. Substitua textos fixos por chamadas à função t():
+
+ANTES:
+countEl.textContent = formatNumber(potatoes) + ' batatas';
+
+DEPOIS:
+countEl.textContent = formatNumber(potatoes) + ' ' + t('potatoes');
+
+3. Chame updateGameLanguage() sempre que renderizar a UI:
+
+function renderUpgrades() {
+  // ... código existente ...
+  
+  // Use t() para traduzir textos
+  upgradesEl.innerHTML = `
+    <h3>${t('upgrades')}</h3>
+    ...
+  `;
+}
+
+TRADUÇÕES PRONTAS PARA CADA JOGO:
+==================================
+
+POTATO CLICKER:
+- potatoes: "batatas" / "potatoes" / "patatas"
+- perSecond: "por segundo" / "per second" / "por segundo"
+- menu: "Menu" / "Menu" / "Menú"
+- play: "Jogar" / "Play" / "Jugar"
+- save: "Salvo!" / "Saved!" / "¡Guardado!"
+
+NEOSNAKE:
+- score: "Pontuação" / "Score" / "Puntuación"
+- highScore: "Recorde" / "High Score" / "Récord"
+- gameOver: "Fim de Jogo" / "Game Over" / "Fin del Juego"
+- pressSpace: "Pressione ESPAÇO" / "Press SPACE" / "Presiona ESPACIO"
+
+LOCAL CHESS:
+- white: "Brancas" / "White" / "Blancas"
+- black: "Pretas" / "Black" / "Negras"
+- turn: "Vez" / "Turn" / "Turno"
+- check: "Xeque" / "Check" / "Jaque"
+- checkmate: "Xeque-mate" / "Checkmate" / "Jaque mate"
+
+CODE RECALL:
+- level: "Nível" / "Level" / "Nivel"
+- watch: "Observe" / "Watch" / "Observa"
+- yourTurn: "Sua vez" / "Your Turn" / "Tu Turno"
+- gameOver: "Fim de Jogo" / "Game Over" / "Fin del Juego"
+
+PATIENCE:
+- time: "Tempo" / "Time" / "Tiempo"
+- stability: "Estabilidade" / "Stability" / "Estabilidad"
+- hold: "Segure" / "Hold" / "Mantén"
+- gameOver: "Fim de Jogo" / "Game Over" / "Fin del Juego"
+
+NEOGOAL:
+- player: "Jogador" / "Player" / "Jugador"
+- ai: "IA" / "AI" / "IA"
+- energy: "Energia" / "Energy" / "Energía"
+- goal: "GOL!" / "GOAL!" / "¡GOL!"
+- win: "Vitória!" / "Victory!" / "¡Victoria!"
+- lose: "Derrota!" / "Defeat!" / "¡Derrota!"

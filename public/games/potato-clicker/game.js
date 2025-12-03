@@ -135,8 +135,10 @@ function formatNumber(num) {
 }
 
 function updateDisplay() {
-    countEl.textContent = formatNumber(potatoes) + ' batatas';
-    perSecondEl.textContent = formatNumber(potatoesPerSecond * prestigeMultiplier) + '/seg';
+    const potatoesText = typeof t === 'function' ? t('potatoes') : 'batatas';
+    const perSecText = typeof t === 'function' ? t('perSecond') : '/seg';
+    countEl.textContent = formatNumber(potatoes) + ' ' + potatoesText;
+    perSecondEl.textContent = formatNumber(potatoesPerSecond * prestigeMultiplier) + perSecText;
     multiplierEl.textContent = prestigeLevel > 0 ? `Multiplicador: x${prestigeMultiplier}` : '';
     prestigeMultiplierEl.textContent = `x${prestigeMultiplier}`;
     nextPrestigeEl.textContent = `x${prestigeLevel + 2}`;
@@ -209,33 +211,96 @@ function buyClickUpgrade(index) {
 }
 
 function renderUpgrades() {
+    const ownedText = typeof t === 'function' ? t('owned') : 'Possui:';
+    const perClickText = typeof t === 'function' ? t('perClick') : '/clique';
+    const perSecText = typeof t === 'function' ? t('perSecond') : '/seg';
+    const clickUpgradesText = typeof t === 'function' ? t('clickUpgrades') : 'Upgrades de Clique';
+    const autoProductionText = typeof t === 'function' ? t('autoProduction') : 'Produção Automática';
+    
+    const upgradeNames = {
+        cursor: typeof t === 'function' ? t('cursor') : 'Cursor',
+        ironHand: typeof t === 'function' ? t('ironHand') : 'Mão de Ferro',
+        mechanicalArm: typeof t === 'function' ? t('mechanicalArm') : 'Braço Mecânico',
+        cyberArm: typeof t === 'function' ? t('cyberArm') : 'Braço Cibernético',
+        electricPower: typeof t === 'function' ? t('electricPower') : 'Poder Elétrico',
+        flamingTouch: typeof t === 'function' ? t('flamingTouch') : 'Toque Flamejante',
+        diamondFinger: typeof t === 'function' ? t('diamondFinger') : 'Dedo Diamante',
+        divineClick: typeof t === 'function' ? t('divineClick') : 'Clique Divino',
+        cosmicClick: typeof t === 'function' ? t('cosmicClick') : 'Clique Cósmico',
+        royalClick: typeof t === 'function' ? t('royalClick') : 'Clique Real',
+        supremeClick: typeof t === 'function' ? t('supremeClick') : 'Clique Supremo',
+        farmer: typeof t === 'function' ? t('farmer') : 'Fazendeiro',
+        tractor: typeof t === 'function' ? t('tractor') : 'Trator',
+        factory: typeof t === 'function' ? t('factory') : 'Fábrica',
+        robot: typeof t === 'function' ? t('robot') : 'Robô',
+        city: typeof t === 'function' ? t('city') : 'Cidade',
+        spaceship: typeof t === 'function' ? t('spaceship') : 'Nave Espacial',
+        planet: typeof t === 'function' ? t('planet') : 'Planeta',
+        galaxy: typeof t === 'function' ? t('galaxy') : 'Galáxia',
+        magicPortal: typeof t === 'function' ? t('magicPortal') : 'Portal Mágico',
+        dimension: typeof t === 'function' ? t('dimension') : 'Dimensão',
+        universe: typeof t === 'function' ? t('universe') : 'Universo',
+        multiverse: typeof t === 'function' ? t('multiverse') : 'Multiverso',
+        omniverse: typeof t === 'function' ? t('omniverse') : 'Omniverso'
+    };
+    
+    const getUpgradeName = (name) => {
+        const parts = name.split(' ');
+        const icon = parts[0];
+        const key = name.includes('Cursor') ? 'cursor' :
+                   name.includes('Ferro') ? 'ironHand' :
+                   name.includes('Mecânico') ? 'mechanicalArm' :
+                   name.includes('Cibernético') ? 'cyberArm' :
+                   name.includes('Elétrico') ? 'electricPower' :
+                   name.includes('Flamejante') ? 'flamingTouch' :
+                   name.includes('Diamante') ? 'diamondFinger' :
+                   name.includes('Divino') ? 'divineClick' :
+                   name.includes('Cósmico') ? 'cosmicClick' :
+                   name.includes('Real') ? 'royalClick' :
+                   name.includes('Supremo') ? 'supremeClick' :
+                   name.includes('Fazendeiro') ? 'farmer' :
+                   name.includes('Trator') ? 'tractor' :
+                   name.includes('Fábrica') ? 'factory' :
+                   name.includes('Robô') ? 'robot' :
+                   name.includes('Cidade') ? 'city' :
+                   name.includes('Nave') ? 'spaceship' :
+                   name.includes('Planeta') ? 'planet' :
+                   name.includes('Galáxia') ? 'galaxy' :
+                   name.includes('Portal') ? 'magicPortal' :
+                   name.includes('Dimensão') ? 'dimension' :
+                   name.includes('Universo') && !name.includes('Multi') && !name.includes('Omni') ? 'universe' :
+                   name.includes('Multiverso') ? 'multiverse' :
+                   name.includes('Omniverso') ? 'omniverse' : null;
+        return key ? `${icon} ${upgradeNames[key]}` : name;
+    };
+    
     const clickHTML = clickUpgrades.map((u, i) => `
         <div class="upgrade ${potatoes >= u.cost ? '' : 'disabled'}" onclick="buyClickUpgrade(${i})">
             <div class="upgrade-header">
-                <div class="upgrade-name">${u.name}</div>
+                <div class="upgrade-name">${getUpgradeName(u.name)}</div>
                 <div class="upgrade-cost">${formatNumber(u.cost)}</div>
             </div>
-            <div class="upgrade-info">Possui: ${u.owned} | +${formatNumber(u.power)}/clique</div>
+            <div class="upgrade-info">${ownedText} ${u.owned} | +${formatNumber(u.power)}${perClickText}</div>
         </div>
     `).join('');
 
     const autoHTML = upgrades.map((u, i) => `
         <div class="upgrade ${potatoes >= u.cost ? '' : 'disabled'}" onclick="buyUpgrade(${i})">
             <div class="upgrade-header">
-                <div class="upgrade-name">${u.name}</div>
+                <div class="upgrade-name">${getUpgradeName(u.name)}</div>
                 <div class="upgrade-cost">${formatNumber(u.cost)}</div>
             </div>
-            <div class="upgrade-info">Possui: ${u.owned} | +${formatNumber(u.pps)}/seg</div>
+            <div class="upgrade-info">${ownedText} ${u.owned} | +${formatNumber(u.pps)}${perSecText}</div>
         </div>
     `).join('');
 
     upgradesEl.innerHTML = `
         <div style="margin-bottom: 20px;">
-            <h3 style="color: var(--accent); margin-bottom: 10px; font-size: 1.2rem;">👆 Upgrades de Clique</h3>
+            <h3 style="color: var(--accent); margin-bottom: 10px; font-size: 1.2rem;">👆 ${clickUpgradesText}</h3>
             ${clickHTML}
         </div>
         <div>
-            <h3 style="color: var(--accent); margin-bottom: 10px; font-size: 1.2rem;">⚡ Produção Automática</h3>
+            <h3 style="color: var(--accent); margin-bottom: 10px; font-size: 1.2rem;">⚡ ${autoProductionText}</h3>
             ${autoHTML}
         </div>
     `;
@@ -255,17 +320,21 @@ function checkSkinUnlocks() {
     skins.forEach(skin => {
         if (!skin.unlocked && potatoes >= skin.requirement) {
             skin.unlocked = true;
-            showNotification(`🎨 Nova skin: ${skin.name}!`);
+            const newSkinText = typeof t === 'function' ? t('newSkin') : 'Nova skin:';
+            showNotification(`🎨 ${newSkinText} ${skin.name}!`);
         }
     });
     renderSkins();
 }
 
 function renderSkins() {
+    const unlockedText = typeof t === 'function' ? t('unlocked') : 'Desbloqueada';
+    const potatoesText = typeof t === 'function' ? t('potatoes') : 'batatas';
+    
     skinsEl.innerHTML = skins.map((s, i) => `
         <div class="skin ${s.unlocked ? (s.emoji === currentSkin ? 'active' : '') : 'locked'}" 
              onclick="selectSkin(${i})"
-             title="${s.name} - ${s.unlocked ? 'Desbloqueada' : formatNumber(s.requirement) + ' batatas'}">
+             title="${s.name} - ${s.unlocked ? unlockedText : formatNumber(s.requirement) + ' ' + potatoesText}">
             ${s.emoji}
         </div>
     `).join('');
@@ -370,7 +439,8 @@ function renderGlobalLeaderboard() {
     if (!globalEl) return;
     
     if (globalLeaderboard.length === 0) {
-        globalEl.innerHTML = '<div style="text-align: center; color: #999; padding: 20px;">Carregando placar global...</div>';
+        const loadingText = typeof t === 'function' ? t('loadingLeaderboard') : 'Carregando placar global...';
+        globalEl.innerHTML = `<div style="text-align: center; color: #999; padding: 20px;">${loadingText}</div>`;
         return;
     }
     
@@ -396,7 +466,8 @@ function renderLeaderboard() {
     if (!leaderboardEl) return;
     
     if (leaderboard.length === 0) {
-        leaderboardEl.innerHTML = '<div style="text-align: center; color: #999; padding: 20px;">Nenhum jogador ainda. Seja o primeiro!</div>';
+        const noPlayersText = typeof t === 'function' ? t('noPlayers') : 'Nenhum jogador ainda. Seja o primeiro!';
+        leaderboardEl.innerHTML = `<div style="text-align: center; color: #999; padding: 20px;">${noPlayersText}</div>`;
         return;
     }
     
@@ -418,14 +489,16 @@ function renderLeaderboard() {
 }
 
 function setPlayerName() {
-    const name = prompt('Digite seu nome de jogador:', playerName);
+    const promptText = typeof t === 'function' ? t('enterName') : 'Digite seu nome de jogador:';
+    const name = prompt(promptText, playerName);
     if (name && name.trim()) {
         playerName = name.trim().substring(0, 20);
         localStorage.setItem('playerName', playerName);
         document.getElementById('playerNameDisplay').textContent = playerName;
         updateLeaderboard();
         renderLeaderboard();
-        showNotification(`👤 Nome alterado para: ${playerName}`);
+        const nameChangedText = typeof t === 'function' ? t('nameChanged') : 'Nome alterado para:';
+        showNotification(`👤 ${nameChangedText} ${playerName}`);
     }
 }
 
@@ -516,7 +589,8 @@ function renderStats() {
 
 function doPrestige() {
     if (potatoes >= 10000000) {
-        if (confirm('Prestígio resetará tudo mas aumentará o multiplicador. Continuar?')) {
+        const confirmText = typeof t === 'function' ? t('prestigeConfirm') : 'Prestígio resetará tudo mas aumentará o multiplicador. Continuar?';
+        if (confirm(confirmText)) {
             prestigeLevel++;
             prestigeMultiplier = prestigeLevel + 1;
             potatoes = 0;
@@ -527,7 +601,9 @@ function doPrestige() {
             updateDisplay();
             renderUpgrades();
             checkAchievements();
-            showNotification(`⭐ Prestígio ${prestigeLevel}! Multiplicador: x${prestigeMultiplier}`);
+            const prestigeText = typeof t === 'function' ? t('prestigeSuccess') : 'Prestígio';
+            const multiplierText = typeof t === 'function' ? t('multiplier') : 'Multiplicador:';
+            showNotification(`⭐ ${prestigeText} ${prestigeLevel}! ${multiplierText} x${prestigeMultiplier}`);
         }
     }
 }
@@ -553,18 +629,21 @@ function changeTheme(theme) {
 function setKeybind() {
     isSettingKeybind = true;
     const btn = document.getElementById('keybindBtn');
-    btn.textContent = 'Pressione uma tecla...';
+    const pressKeyText = typeof t === 'function' ? t('pressKey') : 'Pressione uma tecla...';
+    btn.textContent = pressKeyText;
     btn.style.background = 'rgba(255,215,0,0.3)';
     
     const handler = (e) => {
         e.preventDefault();
         clickKeybind = e.key;
         localStorage.setItem('clickKeybind', e.key);
-        btn.textContent = `Tecla: ${e.key.toUpperCase()}`;
+        const keyText = typeof t === 'function' ? t('key') : 'Tecla:';
+        btn.textContent = `${keyText} ${e.key.toUpperCase()}`;
         btn.style.background = '';
         isSettingKeybind = false;
         document.removeEventListener('keydown', handler);
-        showNotification(`⌨️ Keybind definida: ${e.key.toUpperCase()}`);
+        const keybindSetText = typeof t === 'function' ? t('keybindSet') : 'Keybind definida:';
+        showNotification(`⌨️ ${keybindSetText} ${e.key.toUpperCase()}`);
     };
     
     document.addEventListener('keydown', handler);
@@ -573,8 +652,10 @@ function setKeybind() {
 function removeKeybind() {
     clickKeybind = null;
     localStorage.removeItem('clickKeybind');
-    document.getElementById('keybindBtn').textContent = 'Definir Tecla';
-    showNotification('⌨️ Keybind removida!');
+    const setKeyText = typeof t === 'function' ? t('setKey') : 'Definir Tecla';
+    document.getElementById('keybindBtn').textContent = setKeyText;
+    const removedText = typeof t === 'function' ? t('keybindRemoved') : 'Keybind removida!';
+    showNotification(`⌨️ ${removedText}`);
 }
 
 function redeemCode() {
@@ -582,18 +663,21 @@ function redeemCode() {
     const code = input.value.trim().toUpperCase();
     
     if (!code) {
-        showNotification('❌ Digite um código!');
+        const enterCodeText = typeof t === 'function' ? t('codeEnter') : 'Digite um código!';
+        showNotification(`❌ ${enterCodeText}`);
         return;
     }
     
     if (usedCodes.includes(code)) {
-        showNotification('❌ Código já usado!');
+        const usedText = typeof t === 'function' ? t('codeUsed') : 'Código já usado!';
+        showNotification(`❌ ${usedText}`);
         input.value = '';
         return;
     }
     
     if (!codes[code]) {
-        showNotification('❌ Código inválido!');
+        const invalidText = typeof t === 'function' ? t('codeInvalid') : 'Código inválido!';
+        showNotification(`❌ ${invalidText}`);
         input.value = '';
         return;
     }
@@ -624,7 +708,8 @@ function redeemCode() {
     usedCodes.push(code);
     localStorage.setItem('usedCodes', JSON.stringify(usedCodes));
     
-    showNotification(`✅ ${reward.desc} resgatado!`);
+    const redeemedText = typeof t === 'function' ? t('codeRedeemed') : 'resgatado!';
+    showNotification(`✅ ${reward.desc} ${redeemedText}`);
     input.value = '';
     updateDisplay();
     renderUpgrades();
@@ -649,7 +734,10 @@ function saveGame(showMsg = true) {
         achievements: achievements.map(a => ({ unlocked: a.unlocked }))
     };
     localStorage.setItem('potatoClickerSave', JSON.stringify(data));
-    if (showMsg) showNotification('💾 Salvo!');
+    if (showMsg) {
+        const savedText = typeof t === 'function' ? t('saved') : 'Salvo!';
+        showNotification(`💾 ${savedText}`);
+    }
     saveToGlobalLeaderboard();
 }
 
@@ -733,5 +821,6 @@ function showMainMenu() {
 }
 
 function showCredits() {
-    alert('🥔 Potato Clicker\n\nDesenvolvido por: NeoGames\nVersão: 1.0\n\nObrigado por jogar!');
+    const creditsText = typeof t === 'function' ? t('creditsText') : '🥔 Potato Clicker\n\nDesenvolvido por: NeoGames\nVersão: 1.0\n\nObrigado por jogar!';
+    alert(creditsText);
 }

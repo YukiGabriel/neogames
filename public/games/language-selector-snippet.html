@@ -1,0 +1,31 @@
+<!-- Seletor de Idioma para Jogos -->
+<!-- Adicione este código no menu principal de cada jogo -->
+
+<div style="margin: 20px auto; max-width: 400px;">
+    <h3 style="color: #00d4ff; text-align: center; margin-bottom: 15px;">🌍 Idioma / Language</h3>
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+        <button onclick="changeGameLanguage('pt')" id="langPT" style="padding: 15px; background: linear-gradient(45deg, #009c3b, #ffdf00); border: 3px solid transparent; color: #fff; font-size: 1.1rem; font-weight: bold; border-radius: 10px; cursor: pointer; transition: all 0.3s;">
+            🇧🇷 PT
+        </button>
+        <button onclick="changeGameLanguage('en')" id="langEN" style="padding: 15px; background: linear-gradient(45deg, #b22234, #3c3b6e); border: 3px solid transparent; color: #fff; font-size: 1.1rem; font-weight: bold; border-radius: 10px; cursor: pointer; transition: all 0.3s;">
+            🇺🇸 EN
+        </button>
+        <button onclick="changeGameLanguage('es')" id="langES" style="padding: 15px; background: linear-gradient(45deg, #c60b1e, #ffc400); border: 3px solid transparent; color: #fff; font-size: 1.1rem; font-weight: bold; border-radius: 10px; cursor: pointer; transition: all 0.3s;">
+            🇪🇸 ES
+        </button>
+    </div>
+</div>
+
+<style>
+    [id^="lang"]:hover {
+        transform: scale(1.05);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    }
+    [id^="lang"].active {
+        border-color: #fff !important;
+        box-shadow: 0 0 20px rgba(255,255,255,0.5);
+    }
+</style>
+
+<!-- Adicione também no <head> ou antes do </body>: -->
+<!-- <script src="translations.js"></script> -->
