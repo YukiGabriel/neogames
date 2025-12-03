@@ -1,9 +1,12 @@
 import Head from 'next/head';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import { useLanguage } from '../contexts/LanguageContext';
 import styles from '../styles/Legal.module.css';
 
 export default function Privacidade() {
+  const { t, language } = useLanguage();
+  
   return (
     <>
       <Head>
@@ -15,8 +18,15 @@ export default function Privacidade() {
 
       <main className={styles.main}>
         <div className={styles.container}>
-          <h1 className={styles.title}>🛡️ Política de Privacidade</h1>
-          <p className={styles.updated}>Última atualização: 15 de janeiro de 2025</p>
+          {language !== 'pt' && (
+            <div style={{background: 'rgba(0,212,255,0.1)', padding: '1rem', borderRadius: '8px', marginBottom: '2rem', border: '1px solid #00d4ff', textAlign: 'center'}}>
+              <p style={{color: 'var(--text-primary)', margin: 0}}>
+                {language === 'en' ? '🌐 This legal document is only available in Portuguese (Brazil)' : '🌐 Este documento legal solo está disponible en portugués (Brasil)'}
+              </p>
+            </div>
+          )}
+          <h1 className={styles.title}>{t('privacyPageTitle')}</h1>
+          <p className={styles.updated}>{t('lastUpdated')}: 15 de janeiro de 2025</p>
 
           <section className={styles.section}>
             <h2>1. Introdução e Nosso Compromisso</h2>

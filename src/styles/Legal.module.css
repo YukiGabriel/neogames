@@ -1,7 +1,7 @@
 .main {
   min-height: 100vh;
   padding: 2rem 0;
-  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+  background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
 }
 
 .container {
@@ -44,23 +44,24 @@
 
 .updated {
   text-align: center;
-  color: #999;
+  color: var(--text-secondary);
   font-size: 0.95rem;
   margin-bottom: 3rem;
   font-style: italic;
 }
 
 .section {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--bg-card);
   padding: 2rem;
   border-radius: 12px;
   margin-bottom: 2rem;
   border-left: 4px solid #00d4ff;
+  border: 1px solid var(--border);
   transition: all 0.3s;
 }
 
 .section:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--bg-secondary);
   transform: translateX(5px);
 }
 
@@ -72,7 +73,7 @@
 }
 
 .section h3 {
-  color: #fff;
+  color: var(--text-primary);
   font-size: 1.3rem;
   margin-top: 1.5rem;
   margin-bottom: 0.75rem;
@@ -80,14 +81,14 @@
 }
 
 .section p {
-  color: #ccc;
+  color: var(--text-secondary);
   line-height: 1.8;
   margin-bottom: 1rem;
   font-size: 1rem;
 }
 
 .section ul {
-  color: #ccc;
+  color: var(--text-secondary);
   line-height: 1.8;
   margin-left: 1.5rem;
   margin-bottom: 1rem;

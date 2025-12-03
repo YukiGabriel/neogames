@@ -28,13 +28,18 @@ export const translations = {
     madeWith: "Feito com 💙 para jogadores",
     lightTheme: "Tema Claro",
     darkTheme: "Tema Escuro",
+    play: "Jogar",
     featuredGames: "🔥 Jogos do Momento no NeoGames",
     mostPlayed: "🎮 Mais Jogados na Última Semana",
     adminMessage: "📢 Mensagem do Administrador",
     announcementTitle: "NeoGames: Em Desenvolvimento - Uma Nova Plataforma de Jogos",
     announcementBody1: "Bem-vindo à NeoGames! Estamos atualmente empolgados em construir uma nova plataforma de jogos online, focada em experiências divertidas e acessíveis. Todos os jogos que você vê mencionados (como Emoji Crush, Local Chess, NeoSnake, Potato Clicker e Code Recall) estão em diversas fases de desenvolvimento.",
     announcementBody2: "Nossa missão é criar um espaço onde a diversão seja ilimitada. Agradecemos sua paciência e interesse enquanto trabalhamos para dar vida a este projeto. Volte sempre para acompanhar nosso progresso!",
-    announcementFooter: "NeoGames: Juntos construindo o futuro dos jogos."
+    announcementFooter: "NeoGames: Juntos construindo o futuro dos jogos.",
+    aboutPageTitle: "🕹️ Sobre Nós: A Missão da NeoGames",
+    termsPageTitle: "📜 Termos de Uso",
+    privacyPageTitle: "🛡️ Política de Privacidade",
+    lastUpdated: "Última atualização"
   },
   en: {
     searchPlaceholder: "Search games...",
@@ -65,13 +70,18 @@ export const translations = {
     madeWith: "Made with 💙 for gamers",
     lightTheme: "Light Theme",
     darkTheme: "Dark Theme",
+    play: "Play",
     featuredGames: "🔥 Trending Games on NeoGames",
     mostPlayed: "🎮 Most Played This Week",
     adminMessage: "📢 Administrator Message",
     announcementTitle: "NeoGames: In Development - A New Gaming Platform",
     announcementBody1: "Welcome to NeoGames! We are currently excited to build a new online gaming platform, focused on fun and accessible experiences. All the games you see mentioned (such as Emoji Crush, Local Chess, NeoSnake, Potato Clicker and Code Recall) are in various stages of development.",
     announcementBody2: "Our mission is to create a space where fun is unlimited. We appreciate your patience and interest as we work to bring this project to life. Come back often to follow our progress!",
-    announcementFooter: "NeoGames: Together building the future of gaming."
+    announcementFooter: "NeoGames: Together building the future of gaming.",
+    aboutPageTitle: "🕹️ About Us: The NeoGames Mission",
+    termsPageTitle: "📜 Terms of Use",
+    privacyPageTitle: "🛡️ Privacy Policy",
+    lastUpdated: "Last updated"
   },
   es: {
     searchPlaceholder: "Buscar juegos...",
@@ -102,13 +112,18 @@ export const translations = {
     madeWith: "Hecho con 💙 para jugadores",
     lightTheme: "Tema Claro",
     darkTheme: "Tema Oscuro",
+    play: "Jugar",
     featuredGames: "🔥 Juegos del Momento en NeoGames",
     mostPlayed: "🎮 Más Jugados Esta Semana",
     adminMessage: "📢 Mensaje del Administrador",
     announcementTitle: "NeoGames: En Desarrollo - Una Nueva Plataforma de Juegos",
     announcementBody1: "¡Bienvenido a NeoGames! Actualmente estamos emocionados de construir una nueva plataforma de juegos en línea, enfocada en experiencias divertidas y accesibles. Todos los juegos que ves mencionados (como Emoji Crush, Local Chess, NeoSnake, Potato Clicker y Code Recall) están en varias etapas de desarrollo.",
     announcementBody2: "Nuestra misión es crear un espacio donde la diversión sea ilimitada. Agradecemos tu paciencia e interés mientras trabajamos para dar vida a este proyecto. ¡Vuelve siempre para seguir nuestro progreso!",
-    announcementFooter: "NeoGames: Juntos construyendo el futuro de los juegos."
+    announcementFooter: "NeoGames: Juntos construyendo el futuro de los juegos.",
+    aboutPageTitle: "🕹️ Sobre Nosotros: La Misión de NeoGames",
+    termsPageTitle: "📜 Términos de Uso",
+    privacyPageTitle: "🛡️ Política de Privacidad",
+    lastUpdated: "Última actualización"
   }
 };
 
