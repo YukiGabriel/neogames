@@ -11,9 +11,9 @@ export default function Footer() {
               Plataforma de jogos online gratuitos. Diversão ilimitada, sem downloads.
             </p>
             <div className={styles.social}>
-              <a href="#" className={styles.socialLink}>📘 Facebook</a>
-              <a href="#" className={styles.socialLink}>🐦 Twitter</a>
-              <a href="#" className={styles.socialLink}>📸 Instagram</a>
+              <a href="https://www.instagram.com/neogames_studios/" target="_blank" rel="noopener noreferrer" className={styles.socialLink} title="Instagram">
+                <img src="/icons/instagram-svgrepo-com.svg" alt="Instagram" style={{width: '24px', height: '24px', display: 'block'}} />
+              </a>
             </div>
           </div>
 

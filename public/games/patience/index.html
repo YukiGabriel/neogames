@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Patience - NeoGames</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; }
         body {
             background: linear-gradient(135deg, #0a0a1e 0%, #1a1a3e 100%);
             display: flex;
@@ -26,26 +26,116 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            z-index: 1000;
+            z-index: 20000;
             animation: fadeOut 0.8s 3s forwards;
+            overflow: hidden;
+        }
+        #splash::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 20s linear infinite;
+        }
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
         }
         @keyframes fadeOut {
             to { opacity: 0; pointer-events: none; }
         }
-        .logo { font-size: 120px; font-weight: 900; color: white; text-shadow: 0 0 40px rgba(255,255,255,0.8); animation: logoFloat 3s ease-in-out infinite; }
+        .logo-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: logoEntrance 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        @keyframes logoEntrance {
+            0% { transform: scale(0) rotate(-180deg); opacity: 0; }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+        .logo { font-size: 8rem; font-weight: 900; color: white; text-shadow: 0 0 40px rgba(255,255,255,0.8), 0 0 80px rgba(0,212,255,0.6); position: relative; z-index: 2; animation: logoFloat 3s ease-in-out infinite; }
         @keyframes logoFloat {
-            0%, 100% { transform: translateY(0); }
+            0%, 100% { transform: translateY(0px); }
             50% { transform: translateY(-10px); }
         }
-        .gameTitle { font-size: 48px; font-weight: 700; color: white; margin-top: 30px; opacity: 0; animation: titleFade 1s 3s forwards; }
-        @keyframes titleFade {
-            to { opacity: 1; }
+        .logo-ring {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            animation: ringPulse 2s ease-in-out infinite;
         }
-        .loadingBar { width: 400px; height: 8px; background: rgba(255,255,255,0.2); border-radius: 4px; margin-top: 30px; overflow: hidden; opacity: 0; animation: titleFade 1s 3s forwards; }
-        .loadingFill { height: 100%; background: white; border-radius: 4px; animation: loading 1s 3s forwards; width: 0; }
-        @keyframes loading {
+        .logo-ring:nth-child(2) {
+            animation-delay: 0.3s;
+            width: 240px;
+            height: 240px;
+        }
+        .logo-ring:nth-child(3) {
+            animation-delay: 0.6s;
+            width: 280px;
+            height: 280px;
+        }
+        @keyframes ringPulse {
+            0%, 100% { transform: scale(1); opacity: 0.3; }
+            50% { transform: scale(1.1); opacity: 0.1; }
+        }
+        .gameTitle { font-size: 2.5rem; font-weight: 700; color: white; margin-top: 30px; letter-spacing: 8px; text-transform: uppercase; animation: textSlide 1s 0.5s backwards; text-shadow: 0 2px 20px rgba(0,0,0,0.3); }
+        @keyframes textSlide {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: white;
+            border-radius: 50%;
+            animation: particleFloat 3s ease-in-out infinite;
+        }
+        @keyframes particleFloat {
+            0%, 100% { transform: translateY(0) translateX(0); opacity: 0; }
+            50% { opacity: 1; }
+        }
+        .loadingScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0a0a1e 0%, #1a1a3e 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 19999;
+            animation: fadeOut 0.5s 4s forwards;
+        }
+        .loadingTitle { font-size: 3rem; font-weight: bold; color: white; margin-bottom: 30px; animation: slideDown 0.8s 2.5s backwards; }
+        @keyframes slideDown {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .loadingBar { width: 300px; height: 10px; background: rgba(255,255,255,0.3); border-radius: 10px; overflow: hidden; animation: slideUp 0.8s 2.8s backwards; }
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .loadingFill { height: 100%; background: white; border-radius: 10px; animation: loadProgress 1s 3s forwards; width: 0; }
+        @keyframes loadProgress {
             to { width: 100%; }
         }
+        .loadingText { color: white; margin-top: 20px; font-size: 1.2rem; animation: slideUp 0.8s 3s backwards; }
         #gameContainer {
             position: relative;
             width: 100vw;
@@ -185,9 +275,30 @@
 </head>
 <body>
     <div id="splash">
-        <div class="logo">N</div>
-        <div class="gameTitle">Patience</div>
+        <div class="particles">
+            <div class="particle" style="left: 10%; animation-delay: 0s; animation-duration: 3s;"></div>
+            <div class="particle" style="left: 20%; animation-delay: 0.5s; animation-duration: 3.5s;"></div>
+            <div class="particle" style="left: 30%; animation-delay: 1s; animation-duration: 4s;"></div>
+            <div class="particle" style="left: 40%; animation-delay: 1.5s; animation-duration: 3.2s;"></div>
+            <div class="particle" style="left: 50%; animation-delay: 0.8s; animation-duration: 3.8s;"></div>
+            <div class="particle" style="left: 60%; animation-delay: 1.2s; animation-duration: 3.3s;"></div>
+            <div class="particle" style="left: 70%; animation-delay: 0.3s; animation-duration: 4.2s;"></div>
+            <div class="particle" style="left: 80%; animation-delay: 1.8s; animation-duration: 3.6s;"></div>
+            <div class="particle" style="left: 90%; animation-delay: 0.6s; animation-duration: 3.9s;"></div>
+        </div>
+        <div class="logo-container">
+            <div class="logo-ring"></div>
+            <div class="logo-ring"></div>
+            <div class="logo-ring"></div>
+            <div class="logo">N</div>
+        </div>
+        <div class="gameTitle">NeoGames</div>
+    </div>
+
+    <div class="loadingScreen">
+        <div class="loadingTitle">💫 Patience</div>
         <div class="loadingBar"><div class="loadingFill"></div></div>
+        <div class="loadingText">Carregando...</div>
     </div>
 
     <div id="gameContainer">

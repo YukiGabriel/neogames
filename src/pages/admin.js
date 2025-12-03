@@ -10,55 +10,66 @@ export default function Admin() {
 
   useEffect(() => {
     loadMessages();
-    const interval = setInterval(checkForMessages, 5000);
+    const interval = setInterval(loadMessages, 5000);
     return () => clearInterval(interval);
   }, []);
 
-  const loadMessages = () => {
-    const stored = localStorage.getItem('adminMessages');
-    if (stored) {
-      setMessages(JSON.parse(stored));
+  const loadMessages = async () => {
+    try {
+      const res = await fetch('/api/messages');
+      const data = await res.json();
+      setMessages(data.messages);
+    } catch (error) {
+      console.error('Erro ao carregar mensagens:', error);
     }
   };
 
-  const checkForMessages = () => {
-    const stored = localStorage.getItem('adminMessages');
-    if (stored) {
-      setMessages(JSON.parse(stored));
-    }
-  };
-
-  const sendMessage = () => {
+  const sendMessage = async () => {
     if (!message.trim()) return;
 
-    const newMessage = {
-      id: Date.now(),
-      text: message,
-      timestamp: new Date().toLocaleString('pt-BR')
-    };
-
-    const updatedMessages = [newMessage, ...messages];
-    localStorage.setItem('adminMessages', JSON.stringify(updatedMessages));
-    
-    // Trigger para notificar outras abas
-    localStorage.setItem('adminBroadcast', Date.now().toString());
-    
-    setMessages(updatedMessages);
-    setMessage('');
-
-    alert('Mensagem enviada para todos os dispositivos!');
+    try {
+      const res = await fetch('/api/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: message })
+      });
+      
+      if (res.ok) {
+        setMessage('');
+        await loadMessages();
+        alert('Mensagem enviada para todos os dispositivos!');
+      }
+    } catch (error) {
+      console.error('Erro ao enviar mensagem:', error);
+      alert('Erro ao enviar mensagem!');
+    }
   };
 
-  const deleteMessage = (id) => {
-    const updatedMessages = messages.filter(m => m.id !== id);
-    localStorage.setItem('adminMessages', JSON.stringify(updatedMessages));
-    setMessages(updatedMessages);
+  const deleteMessage = async (id) => {
+    try {
+      await fetch('/api/messages', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id })
+      });
+      await loadMessages();
+    } catch (error) {
+      console.error('Erro ao deletar mensagem:', error);
+    }
   };
 
-  const clearAll = () => {
+  const clearAll = async () => {
     if (confirm('Limpar todas as mensagens?')) {
-      localStorage.removeItem('adminMessages');
-      setMessages([]);
+      try {
+        await fetch('/api/messages', {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: 'all' })
+        });
+        await loadMessages();
+      } catch (error) {
+        console.error('Erro ao limpar mensagens:', error);
+      }
     }
   };
 

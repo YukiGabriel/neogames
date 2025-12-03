@@ -639,9 +639,8 @@ function showNotification(msg) {
     setTimeout(() => n.remove(), 3000);
 }
 
-function saveGame() {
+function saveGame(showMsg = true) {
     updateLeaderboard();
-    saveToGlobalLeaderboard();
     const data = {
         potatoes, potatoesPerSecond, clickPower, prestigeLevel, prestigeMultiplier, currentSkin, totalClicks, totalPotatoesEarned, gameStartTime, uiTheme, clickKeybind, usedCodes, playerName,
         upgrades: upgrades.map(u => ({ owned: u.owned, cost: u.cost })),
@@ -650,7 +649,8 @@ function saveGame() {
         achievements: achievements.map(a => ({ unlocked: a.unlocked }))
     };
     localStorage.setItem('potatoClickerSave', JSON.stringify(data));
-    showNotification('💾 Salvo!');
+    if (showMsg) showNotification('💾 Salvo!');
+    saveToGlobalLeaderboard();
 }
 
 function loadGame() {
@@ -719,4 +719,19 @@ if (clickKeybind) {
 }
 if (document.getElementById('playerNameDisplay')) {
     document.getElementById('playerNameDisplay').textContent = playerName;
+}
+
+function startGame() {
+    document.getElementById('mainMenu').classList.add('hidden');
+    document.getElementById('menuBtn').style.display = 'block';
+}
+
+function showMainMenu() {
+    document.getElementById('mainMenu').classList.remove('hidden');
+    document.getElementById('menuBtn').style.display = 'none';
+    saveGame(false);
+}
+
+function showCredits() {
+    alert('🥔 Potato Clicker\n\nDesenvolvido por: NeoGames\nVersão: 1.0\n\nObrigado por jogar!');
 }
