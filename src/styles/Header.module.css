@@ -84,10 +84,10 @@
 .searchInput {
   width: 100%;
   padding: 0.75rem 1.25rem;
-  background: #2a2a2a;
+  background: var(--bg-card);
   border: 2px solid transparent;
   border-radius: 25px;
-  color: #ffffff;
+  color: var(--text-primary);
   font-size: 0.95rem;
   transition: all 0.3s;
 }
@@ -95,7 +95,7 @@
 .searchInput:focus {
   outline: none;
   border-color: #00d4ff;
-  background: #333;
+  background: var(--bg-secondary);
   transform: scale(1.02);
 }
 
@@ -104,11 +104,12 @@
   top: 100%;
   left: 0;
   right: 0;
-  background: #2a2a2a;
+  background: var(--bg-card);
   border-radius: 12px;
   margin-top: 0.5rem;
   overflow: hidden;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 4px 20px var(--shadow);
+  border: 1px solid var(--border);
 }
 
 .suggestion {
@@ -118,10 +119,52 @@
   padding: 0.75rem 1rem;
   cursor: pointer;
   transition: background 0.2s;
+  color: var(--text-primary);
 }
 
 .suggestion:hover {
-  background: #333;
+  background: var(--bg-secondary);
+}
+
+.langSelect {
+  background: rgba(255,255,255,0.1);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  flex-shrink: 0;
+}
+
+.langSelect:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+.langSelect option {
+  background: #1a1a1a;
+  color: white;
+}
+
+.themeToggle {
+  font-size: 1.5rem;
+  padding: 0.5rem;
+  background: rgba(255,255,255,0.1);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s;
+  flex-shrink: 0;
+}
+
+.themeToggle:hover {
+  background: rgba(255,255,255,0.2);
+  transform: scale(1.1) rotate(15deg);
 }
 
 .suggestion img {

@@ -17,7 +17,7 @@
   font-size: 2.5rem;
   font-weight: 700;
   margin-bottom: 1.5rem;
-  color: #fff;
+  color: var(--text-primary);
 }
 
 .playerWrapper {
@@ -57,9 +57,10 @@
 .info {
   max-width: 1000px;
   margin: 0 auto;
-  background: #1a1a1a;
+  background: var(--bg-card);
   padding: 2rem;
   border-radius: 12px;
+  border: 1px solid var(--border);
 }
 
 .infoSection {
@@ -73,7 +74,7 @@
 }
 
 .infoSection p {
-  color: #ccc;
+  color: var(--text-secondary);
   line-height: 1.8;
 }
 
@@ -81,7 +82,7 @@
   display: flex;
   gap: 2rem;
   padding-top: 1rem;
-  border-top: 1px solid #333;
+  border-top: 1px solid var(--border);
   font-size: 0.95rem;
 }
 
@@ -91,7 +92,7 @@
 }
 
 .plays {
-  color: #999;
+  color: var(--text-secondary);
 }
 
 @media (max-width: 1024px) {

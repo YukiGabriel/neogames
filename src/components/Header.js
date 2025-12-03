@@ -1,13 +1,30 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { games, categories } from '../data/games';
+import { useLanguage } from '../contexts/LanguageContext';
+import { translations } from '../locales/translations';
 import styles from '../styles/Header.module.css';
 
 export default function Header() {
   const [searchQuery, setSearchQuery] = useState('');
   const [suggestions, setSuggestions] = useState([]);
+  const [theme, setTheme] = useState('dark');
+  const { language, changeLanguage, t } = useLanguage();
   const router = useRouter();
+
+  useEffect(() => {
+    const saved = localStorage.getItem('theme') || 'dark';
+    setTheme(saved);
+    document.body.setAttribute('data-theme', saved);
+  }, []);
+
+  const toggleTheme = () => {
+    const newTheme = theme === 'dark' ? 'light' : 'dark';
+    setTheme(newTheme);
+    localStorage.setItem('theme', newTheme);
+    document.body.setAttribute('data-theme', newTheme);
+  };
 
   const handleSearch = (e) => {
     const query = e.target.value;
@@ -47,7 +64,7 @@ export default function Header() {
         <div className={styles.searchWrapper}>
           <input
             type="text"
-            placeholder="Buscar jogos..."
+            placeholder={t('searchPlaceholder')}
             value={searchQuery}
             onChange={handleSearch}
             className={styles.searchInput}
@@ -69,16 +86,20 @@ export default function Header() {
         </div>
 
         <nav className={styles.nav}>
-          {categories.slice(1).map(category => (
-            <Link
-              key={category}
-              href={`/categoria/${category.toLowerCase()}`}
-              className={styles.navLink}
-            >
-              {category}
-            </Link>
-          ))}
+          <Link href="/categoria/acao" className={styles.navLink}>{t('action')}</Link>
+          <Link href="/categoria/quebra-cabeca" className={styles.navLink}>{t('puzzle')}</Link>
+          <Link href="/categoria/estrategia" className={styles.navLink}>{t('strategy')}</Link>
         </nav>
+
+        <select value={language} onChange={(e) => changeLanguage(e.target.value)} className={styles.langSelect}>
+          <option value="pt">🇧🇷 PT</option>
+          <option value="en">🇺🇸 EN</option>
+          <option value="es">🇪🇸 ES</option>
+        </select>
+
+        <button onClick={toggleTheme} className={styles.themeToggle} title={theme === 'dark' ? t('lightTheme') : t('darkTheme')}>
+          {theme === 'dark' ? '☀️' : '🌙'}
+        </button>
       </div>
     </header>
   );

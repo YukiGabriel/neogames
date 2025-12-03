@@ -3,10 +3,12 @@ import Head from 'next/head';
 import Header from '../../components/Header';
 import GameGrid from '../../components/GameGrid';
 import { games, getGameBySlug, getSimilarGames } from '../../data/games';
+import { useLanguage } from '../../contexts/LanguageContext';
 import styles from '../../styles/GamePage.module.css';
 
 export default function GamePage({ game, similarGames }) {
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const { t, translateCategory } = useLanguage();
 
   const toggleFullscreen = () => {
     const iframe = document.getElementById('game-iframe');
@@ -43,29 +45,29 @@ export default function GamePage({ game, similarGames }) {
                 title={game.title}
               />
               <button onClick={toggleFullscreen} className={styles.fullscreenBtn}>
-                ⛶ Tela Cheia
+                ⛶ {t('fullscreen')}
               </button>
             </div>
 
             <div className={styles.info}>
               <div className={styles.infoSection}>
-                <h2>Sobre o Jogo</h2>
+                <h2>{t('about')}</h2>
                 <p>{game.description}</p>
               </div>
 
               <div className={styles.infoSection}>
-                <h2>Como Jogar</h2>
+                <h2>{t('howToPlay')}</h2>
                 <p>{game.instructions}</p>
               </div>
 
               <div className={styles.meta}>
-                <span className={styles.category}>📁 {game.category}</span>
-                <span className={styles.plays}>👥 {game.plays.toLocaleString()} jogadas</span>
+                <span className={styles.category}>📁 {translateCategory(game.category)}</span>
+                <span className={styles.plays}>👥 {game.plays.toLocaleString()} {t('plays')}</span>
               </div>
             </div>
           </div>
 
-          <GameGrid title="🎯 Mais Jogos Como Este" games={similarGames} />
+          <GameGrid title={t('moreGamesLike')} games={similarGames} />
         </div>
       </main>
     </>

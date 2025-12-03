@@ -18,7 +18,7 @@
   font-size: 1.8rem;
   font-weight: 700;
   margin-bottom: 1.5rem;
-  color: #fff;
+  color: var(--text-primary);
   position: relative;
   display: inline-block;
   text-shadow: 0 2px 10px rgba(0,102,255,0.3);
