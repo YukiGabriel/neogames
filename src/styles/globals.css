@@ -82,3 +82,95 @@ input {
     font-size: 13px;
   }
 }
+
+/* Easter Egg: NEONOVERLOAD */
+body.neon-overload-active {
+  animation: glitchShake 0.08s infinite, hueRotate 0.3s infinite;
+  position: relative;
+}
+
+body.neon-overload-active::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(0deg, rgba(255,0,255,0.1) 0px, transparent 2px, transparent 4px);
+  pointer-events: none;
+  z-index: 9999;
+  animation: scanlines 0.5s linear infinite;
+}
+
+body.neon-overload-active * {
+  text-shadow: 
+    -2px -2px 0 #ff00ff, 2px 2px 0 #00ffff,
+    0 0 10px #ff00ff, 0 0 20px #00ffff, 
+    0 0 30px #ff00ff, 0 0 40px #00ffff !important;
+  box-shadow: 
+    0 0 20px #ff00ff, 0 0 40px #00ffff,
+    inset 0 0 20px rgba(255,0,255,0.3) !important;
+}
+
+@keyframes glitchShake {
+  0% { transform: translate(0, 0) skew(0deg); }
+  10% { transform: translate(-3px, 2px) skew(2deg); }
+  20% { transform: translate(3px, -3px) skew(-2deg); }
+  30% { transform: translate(-2px, 3px) skew(1deg); }
+  40% { transform: translate(2px, -2px) skew(-1deg); }
+  50% { transform: translate(-3px, 1px) skew(1.5deg); }
+  60% { transform: translate(3px, -1px) skew(-1.5deg); }
+  70% { transform: translate(-1px, 2px) skew(0.5deg); }
+  80% { transform: translate(1px, -2px) skew(-0.5deg); }
+  90% { transform: translate(-2px, 1px) skew(1deg); }
+  100% { transform: translate(0, 0) skew(0deg); }
+}
+
+@keyframes hueRotate {
+  0% { filter: hue-rotate(0deg) saturate(4) contrast(1.2); }
+  25% { filter: hue-rotate(90deg) saturate(4) contrast(1.2); }
+  50% { filter: hue-rotate(180deg) saturate(4) contrast(1.2); }
+  75% { filter: hue-rotate(270deg) saturate(4) contrast(1.2); }
+  100% { filter: hue-rotate(360deg) saturate(4) contrast(1.2); }
+}
+
+@keyframes scanlines {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(4px); }
+}
+
+/* Easter Egg: ZENMODE */
+body.zen-mode-active {
+  filter: grayscale(1) sepia(0.3) brightness(0.85) contrast(0.9);
+  transition: filter 2s ease;
+  position: relative;
+}
+
+body.zen-mode-active::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.3) 100%);
+  pointer-events: none;
+  z-index: 9999;
+  animation: breathe 4s ease-in-out infinite;
+}
+
+body.zen-mode-active * {
+  animation: none !important;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.3) !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+  transition: all 2s ease !important;
+}
+
+body.zen-mode-active *:hover {
+  transform: none !important;
+}
+
+@keyframes breathe {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 0.7; }
+}

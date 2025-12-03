@@ -352,9 +352,34 @@
             .menu-btn { padding: 8px 15px; font-size: 0.9rem; }
             .main-menu-title { font-size: 2rem; }
         }
+        .lang-selector {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 30000;
+        }
+        .lang-btn {
+            background: rgba(0,0,0,0.7);
+            border: 2px solid #ffd700;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        .lang-btn:hover { background: rgba(255,215,0,0.3); transform: scale(1.05); }
+        .lang-btn.active { background: #ffd700; color: #1a1a2e; }
     </style>
 </head>
 <body>
+    <div class="lang-selector">
+        <button class="lang-btn active" onclick="changeGameLanguage('pt')">🇧🇷 PT</button>
+        <button class="lang-btn" onclick="changeGameLanguage('en')">🇺🇸 EN</button>
+        <button class="lang-btn" onclick="changeGameLanguage('es')">🇪🇸 ES</button>
+    </div>
     <div class="splash-screen">
         <div class="particles">
             <div class="particle" style="left: 10%; animation-delay: 0s; animation-duration: 3s;"></div>
@@ -451,6 +476,7 @@
     </div>
 
     <script src="/saveSystem.js"></script>
+    <script src="translations.js"></script>
     <script src="game.js"></script>
 </body>
 </html>
