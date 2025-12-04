@@ -82,6 +82,18 @@ export const games = [
     embedUrl: "/games/neogoal/index.html",
     plays: 0,
     featured: true
+  },
+  {
+    id: 8,
+    title: "NeoPool",
+    slug: "neopool",
+    category: "Esportes",
+    thumbnail: "/thumbnails/neopool.jpg",
+    description: "Sinuca de precisão digital! Controle mira, força e efeito da bola branca. Física realista com estética néon futurista.",
+    instructions: "Arraste para mirar. Clique para ajustar força. Use o controle de efeito para aplicar spin na bola branca. Encaçape suas bolas e depois a bola 8!",
+    embedUrl: "/games/neopool/index.html",
+    plays: 0,
+    featured: true
   }
 ];
 

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Generate NeoPool Thumbnail</title>
+</head>
+<body>
+    <canvas id="canvas" width="400" height="300"></canvas>
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        // Background gradient
+        const bgGrad = ctx.createLinearGradient(0, 0, 400, 300);
+        bgGrad.addColorStop(0, '#0a3d2e');
+        bgGrad.addColorStop(1, '#051f19');
+        ctx.fillStyle = bgGrad;
+        ctx.fillRect(0, 0, 400, 300);
+
+        // Grid pattern
+        ctx.strokeStyle = 'rgba(0,255,136,0.15)';
+        ctx.lineWidth = 1;
+        for (let i = 0; i < 400; i += 20) {
+            for (let j = 0; j < 300; j += 20) {
+                ctx.strokeRect(i, j, 20, 20);
+            }
+        }
+
+        // Table border glow
+        ctx.strokeStyle = '#00ff88';
+        ctx.lineWidth = 6;
+        ctx.shadowBlur = 20;
+        ctx.shadowColor = '#00ff88';
+        ctx.strokeRect(20, 20, 360, 260);
+        ctx.shadowBlur = 0;
+
+        // Pockets
+        const pockets = [
+            {x: 20, y: 20}, {x: 200, y: 20}, {x: 380, y: 20},
+            {x: 20, y: 280}, {x: 200, y: 280}, {x: 380, y: 280}
+        ];
+        pockets.forEach(p => {
+            ctx.fillStyle = '#000000';
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, 12, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#00d4ff';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+        });
+
+        // Draw balls
+        const balls = [
+            {x: 120, y: 150, color: '#ffffff', glow: 'rgba(255,255,255,0.5)'},
+            {x: 250, y: 120, color: '#ffff00', glow: 'rgba(255,255,0,0.5)'},
+            {x: 270, y: 140, color: '#0000ff', glow: 'rgba(0,0,255,0.5)'},
+            {x: 290, y: 120, color: '#ff0000', glow: 'rgba(255,0,0,0.5)'},
+            {x: 250, y: 160, color: '#800080', glow: 'rgba(128,0,128,0.5)'},
+            {x: 270, y: 180, color: '#ff8800', glow: 'rgba(255,136,0,0.5)'},
+            {x: 290, y: 160, color: '#00ff00', glow: 'rgba(0,255,0,0.5)'},
+            {x: 310, y: 140, color: '#000000', glow: 'rgba(0,0,0,0.8)', is8: true}
+        ];
+
+        balls.forEach(ball => {
+            const grad = ctx.createRadialGradient(ball.x - 3, ball.y - 3, 1, ball.x, ball.y, 15);
+            grad.addColorStop(0, '#ffffff');
+            grad.addColorStop(0.3, ball.color);
+            grad.addColorStop(1, ball.color === '#ffffff' ? '#cccccc' : '#000000');
+            
+            ctx.shadowBlur = 15;
+            ctx.shadowColor = ball.glow;
+            ctx.fillStyle = grad;
+            ctx.beginPath();
+            ctx.arc(ball.x, ball.y, 15, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.shadowBlur = 0;
+
+            if (ball.is8) {
+                ctx.fillStyle = '#ffffff';
+                ctx.beginPath();
+                ctx.arc(ball.x, ball.y, 6, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = '#000000';
+                ctx.font = 'bold 12px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('8', ball.x, ball.y);
+            }
+        });
+
+        // Cue stick
+        ctx.strokeStyle = '#8B4513';
+        ctx.lineWidth = 8;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(120, 150);
+        ctx.lineTo(40, 200);
+        ctx.stroke();
+
+        ctx.strokeStyle = '#D2691E';
+        ctx.lineWidth = 6;
+        ctx.beginPath();
+        ctx.moveTo(120, 150);
+        ctx.lineTo(40, 200);
+        ctx.stroke();
+
+        // Aim line
+        ctx.strokeStyle = 'rgba(0,255,136,0.6)';
+        ctx.lineWidth = 3;
+        ctx.setLineDash([10, 5]);
+        ctx.beginPath();
+        ctx.moveTo(120, 150);
+        ctx.lineTo(250, 120);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        // Title
+        ctx.shadowBlur = 20;
+        ctx.shadowColor = '#00ff88';
+        ctx.fillStyle = '#00ff88';
+        ctx.font = 'bold 48px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('NEOPOOL', 200, 250);
+        ctx.shadowBlur = 0;
+
+        // Download button
+        setTimeout(() => {
+            const link = document.createElement('a');
+            link.download = 'neopool.jpg';
+            link.href = canvas.toDataURL('image/jpeg', 0.95);
+            link.click();
+            document.body.innerHTML = '<h1 style="font-family:Arial;text-align:center;margin-top:50px;">Thumbnail gerada! Verifique seus downloads.</h1>';
+        }, 100);
+    </script>
+</body>
+</html>

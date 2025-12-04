@@ -3,11 +3,11 @@
   padding: 1rem 0;
   position: sticky;
   top: 0;
-  z-index: 100;
+  z-index: 1000;
   box-shadow: 0 4px 20px rgba(0, 102, 255, 0.4), 0 0 40px rgba(0, 212, 255, 0.2);
   animation: slideDown 0.5s ease-out;
   position: relative;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .header::before {
@@ -79,6 +79,7 @@
   flex: 1;
   max-width: 500px;
   position: relative;
+  z-index: 10001;
 }
 
 .searchInput {
@@ -110,6 +111,7 @@
   overflow: hidden;
   box-shadow: 0 4px 20px var(--shadow);
   border: 1px solid var(--border);
+  z-index: 99999;
 }
 
 .suggestion {

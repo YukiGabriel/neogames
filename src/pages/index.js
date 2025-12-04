@@ -3,11 +3,11 @@ import Head from 'next/head';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import GameGrid from '../components/GameGrid';
-import { getFeaturedGames, getMostPlayedGames } from '../data/games';
+import { getFeaturedGames } from '../data/games';
 import { useLanguage } from '../contexts/LanguageContext';
 import styles from '../styles/Home.module.css';
 
-export default function Home({ featuredGames, mostPlayedGames }) {
+export default function Home({ featuredGames }) {
   const [notification, setNotification] = useState(null);
   const { t } = useLanguage();
 
@@ -89,8 +89,6 @@ export default function Home({ featuredGames, mostPlayedGames }) {
               <p className={styles.announcementFooter}>{t('announcementFooter')}</p>
             </div>
           </div>
-          
-          <GameGrid title={t('mostPlayed')} games={mostPlayedGames} />
         </div>
       </main>
 
@@ -103,7 +101,6 @@ export async function getStaticProps() {
   return {
     props: {
       featuredGames: getFeaturedGames(),
-      mostPlayedGames: getMostPlayedGames(),
     },
   };
 }

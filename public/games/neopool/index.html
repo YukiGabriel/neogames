@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeoPool - NeoGames</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="splash">
+        <div class="particles"></div>
+        <div class="logo-container">
+            <div class="logo-ring"></div>
+            <div class="logo-ring"></div>
+            <div class="logo-ring"></div>
+            <div class="logo">🎱</div>
+        </div>
+        <div class="gameTitle">NeoPool</div>
+    </div>
+
+    <div class="loadingScreen">
+        <div class="loadingTitle" id="loadingTitle">Carregando</div>
+        <div class="loadingBar"><div class="loadingFill"></div></div>
+        <div class="loadingText" id="loadingText">Preparando a mesa...</div>
+    </div>
+
+    <div id="pocketedBalls">
+        <div class="pocketedSection">
+            <div class="sectionTitle" id="solidsTitle">Lisas</div>
+            <div class="ballsContainer" id="solidBalls"></div>
+        </div>
+        <div class="pocketedSection">
+            <div class="sectionTitle" id="stripedTitle">Listradas</div>
+            <div class="ballsContainer" id="stripedBalls"></div>
+        </div>
+    </div>
+
+    <div id="menu">
+        <h1 class="menuTitle">🎱 NeoPool</h1>
+        <div class="menuSection">
+            <h2 id="modeTitle">Modo de Jogo</h2>
+            <button class="menuBtn" id="localBtn">👥 Local (2 Jogadores)</button>
+            <button class="menuBtn" id="aiBtn">🤖 vs IA</button>
+        </div>
+        <div class="menuSection" id="difficultySection" style="display:none;">
+            <h2 id="difficultyTitle">Dificuldade da IA</h2>
+            <button class="menuBtn difficulty" data-difficulty="easy">😊 Fácil</button>
+            <button class="menuBtn difficulty" data-difficulty="medium">😐 Médio</button>
+            <button class="menuBtn difficulty" data-difficulty="hard">😤 Difícil</button>
+        </div>
+        <button class="menuBtn secondary" id="creditsBtn">ℹ️ <span id="creditsText">Créditos</span></button>
+    </div>
+
+    <div id="creditsModal" style="display:none;">
+        <div class="modalContent">
+            <h2>🎱 NeoPool</h2>
+            <p id="creditsDesc">Sinuca de precisão digital com física realista</p>
+            <p>© 2024 NeoGames</p>
+            <button class="btn" id="closeCredits">OK</button>
+        </div>
+    </div>
+
+    <div id="gameContainer">
+        <div class="lang-selector">
+            <button class="lang-btn" data-lang="pt">🇧🇷 PT</button>
+            <button class="lang-btn" data-lang="en">🇺🇸 EN</button>
+            <button class="lang-btn" data-lang="es">🇪🇸 ES</button>
+        </div>
+
+        <div id="ui">
+            <div class="stat">
+                <div id="playerLabel">Jogador</div>
+                <div class="statValue" id="player">1</div>
+            </div>
+            <div class="stat">
+                <div id="typeLabel">Tipo</div>
+                <div class="statValue" id="ballType">-</div>
+            </div>
+            <div class="stat">
+                <div id="turnStatusLabel">Status</div>
+                <div class="statValue" id="turnStatus">🎯</div>
+            </div>
+        </div>
+
+        <canvas id="canvas"></canvas>
+
+        <div id="powerBar">
+            <div id="powerFill"></div>
+        </div>
+
+        <div id="spinControl">
+            <div id="cueBall">
+                <div id="spinPoint"></div>
+            </div>
+        </div>
+
+        <div id="gameOver">
+            <h2 id="victoryText">Vitória!</h2>
+            <p><span id="winnerLabel">Jogador</span> <span id="winner"></span> <span id="wonText">venceu!</span></p>
+            <button class="btn" onclick="location.reload()" id="playAgainBtn">Jogar Novamente</button>
+            <button class="btn" onclick="showMenu()" id="menuBtn">Menu</button>
+        </div>
+
+        <div id="instructions"></div>
+    </div>
+
+    <script src="translations.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>
