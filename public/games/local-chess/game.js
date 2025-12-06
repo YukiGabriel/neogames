@@ -23,7 +23,6 @@ let currentTurn = 'white';
 let whiteFI = 3;
 let blackFI = 3;
 let turnCount = 0;
-let extraMoveUsed = false;
 let gameMode = 'local';
 let aiDifficulty = 'medium';
 
@@ -57,7 +56,6 @@ function initGame() {
     whiteFI = 3;
     blackFI = 3;
     turnCount = 0;
-    extraMoveUsed = false;
     selectedPiece = null;
     
     updateZoneControl();
@@ -140,10 +138,7 @@ function handleClick(e) {
             render();
             
             if (!gameEnded) {
-                if (!extraMoveUsed) {
-                    endTurn();
-                }
-                extraMoveUsed = false;
+                endTurn();
             }
         } else {
             selectedPiece = null;
@@ -258,18 +253,7 @@ function generateFI() {
     blackFI += blackZones;
 }
 
-function useExtraMove(color) {
-    if (color !== currentTurn) return;
-    const fi = color === 'white' ? whiteFI : blackFI;
-    
-    if (fi >= 2) {
-        if (color === 'white') whiteFI -= 2;
-        else blackFI -= 2;
-        extraMoveUsed = true;
-        updateUI();
-        showNotification('⚡ Movimento extra ativado!');
-    }
-}
+
 
 function updateUI() {
     document.getElementById('whiteFI').textContent = whiteFI;
@@ -283,9 +267,6 @@ function updateUI() {
     document.getElementById('blackPieces').textContent = blackPieces;
     
     document.getElementById('turnIndicator').textContent = `Turno: ${currentTurn === 'white' ? 'Brancas' : 'Pretas'}`;
-    
-    document.getElementById('whiteExtraMove').disabled = currentTurn !== 'white' || whiteFI < 2;
-    document.getElementById('blackExtraMove').disabled = currentTurn !== 'black' || blackFI < 2;
     
     const zonesHTML = zones.map(z => `
         <div class="zone-item ${z.control}">

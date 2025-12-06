@@ -1,0 +1,376 @@
+* { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+body {
+    background: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    font-family: 'Segoe UI', sans-serif;
+    overflow: hidden;
+}
+#splash {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #0066ff 0%, #00d4ff 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 20000;
+    animation: fadeOut 0.8s 2.5s forwards;
+    overflow: hidden;
+}
+#splash::before {
+    content: '';
+    position: absolute;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+    background-size: 50px 50px;
+    animation: gridMove 20s linear infinite;
+}
+@keyframes gridMove {
+    0% { transform: translate(0, 0); }
+    100% { transform: translate(50px, 50px); }
+}
+@keyframes fadeOut {
+    to { opacity: 0; pointer-events: none; }
+}
+.logo-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: logoEntrance 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes logoEntrance {
+    0% { transform: scale(0) rotate(-180deg); opacity: 0; }
+    100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+.logo { font-size: 8rem; position: relative; z-index: 2; animation: logoFloat 3s ease-in-out infinite; filter: drop-shadow(0 0 40px rgba(255,255,255,0.8)); }
+@keyframes logoFloat {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+}
+.logo-ring {
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    border: 3px solid rgba(255,255,255,0.3);
+    border-radius: 50%;
+    animation: ringPulse 2s ease-in-out infinite;
+}
+.logo-ring:nth-child(2) { animation-delay: 0.3s; width: 240px; height: 240px; }
+.logo-ring:nth-child(3) { animation-delay: 0.6s; width: 280px; height: 280px; }
+@keyframes ringPulse {
+    0%, 100% { transform: scale(1); opacity: 0.3; }
+    50% { transform: scale(1.1); opacity: 0.1; }
+}
+.gameTitle { font-size: 2.5rem; font-weight: 700; color: white; margin-top: 30px; letter-spacing: 8px; animation: textSlide 1s 0.5s backwards; text-shadow: 0 2px 20px rgba(0,0,0,0.3); }
+@keyframes textSlide {
+    from { transform: translateY(30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+.particles {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    pointer-events: none;
+}
+.loadingScreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 19999;
+    animation: fadeOut 0.5s 3.5s forwards;
+}
+.loadingTitle { font-size: 3rem; font-weight: bold; color: #00d4ff; margin-bottom: 30px; animation: slideDown 0.8s 2.2s backwards; text-shadow: 0 0 20px rgba(0,212,255,0.8); }
+@keyframes slideDown {
+    from { transform: translateY(-50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+.loadingBar { width: 300px; height: 10px; background: rgba(0,212,255,0.3); border-radius: 10px; overflow: hidden; animation: slideUp 0.8s 2.5s backwards; }
+@keyframes slideUp {
+    from { transform: translateY(50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+.loadingFill { height: 100%; background: linear-gradient(90deg, #0066ff, #00d4ff); border-radius: 10px; animation: loadProgress 0.8s 2.7s forwards; width: 0; box-shadow: 0 0 10px rgba(0,212,255,0.8); }
+@keyframes loadProgress {
+    to { width: 100%; }
+}
+.loadingText { color: #00d4ff; margin-top: 20px; font-size: 1.2rem; animation: slideUp 0.8s 2.7s backwards; }
+.main-menu { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 10000; opacity: 0; animation: fadeIn 0.5s 4s forwards; }
+.main-menu.hidden { display: none; }
+.main-menu-title { font-size: 4rem; font-weight: bold; color: #00d4ff; margin-bottom: 50px; text-shadow: 0 0 30px rgba(0,212,255,1); }
+.main-menu-btn { width: 300px; padding: 20px; margin: 10px; background: rgba(0,212,255,0.2); border: 3px solid #00d4ff; color: white; font-size: 1.3rem; font-weight: bold; border-radius: 15px; cursor: pointer; transition: all 0.3s; box-shadow: 0 0 20px rgba(0,212,255,0.3); }
+.main-menu-btn:hover { background: rgba(0,212,255,0.4); transform: scale(1.05); box-shadow: 0 0 40px rgba(0,212,255,0.8); }
+.main-menu-btn.primary { background: #00d4ff; color: #000; }
+.menu-btn { position: fixed; top: 20px; left: 20px; padding: 12px 25px; background: rgba(0,0,0,0.7); color: white; border: 2px solid #00d4ff; border-radius: 10px; font-size: 1rem; font-weight: bold; cursor: pointer; z-index: 1000; transition: all 0.3s; display: none; }
+.menu-btn:hover { background: rgba(0,0,0,0.9); transform: scale(1.05); }
+#gameContainer {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    animation: fadeIn 0.5s 3.5s forwards;
+}
+#gameContainer.hidden { display: none; }
+@keyframes fadeIn {
+    to { opacity: 1; }
+}
+#ui {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 30px;
+    color: white;
+    font-size: 16px;
+    font-weight: 700;
+    text-shadow: 0 0 10px rgba(0,212,255,0.8);
+    z-index: 10;
+}
+.stat { text-align: center; }
+.statValue { font-size: 28px; color: #00d4ff; text-shadow: 0 0 15px rgba(0,212,255,1); }
+#canvas {
+    box-shadow: 0 0 60px rgba(0,212,255,0.3);
+    cursor: pointer;
+}
+#upgradeMenu {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0,0,0,0.95);
+    padding: 40px;
+    border-radius: 20px;
+    text-align: center;
+    display: none;
+    flex-direction: column;
+    gap: 20px;
+    z-index: 100;
+    border: 3px solid #00d4ff;
+    box-shadow: 0 0 40px rgba(0,212,255,0.5);
+}
+#upgradeMenu h2 { color: #00d4ff; font-size: 32px; margin-bottom: 10px; text-shadow: 0 0 20px rgba(0,212,255,1); }
+.upgradeBtn {
+    background: linear-gradient(135deg, #0066ff, #00d4ff);
+    color: white;
+    border: none;
+    padding: 20px 30px;
+    font-size: 18px;
+    font-weight: 700;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 0 20px rgba(0,212,255,0.5);
+    min-width: 300px;
+}
+.upgradeBtn:hover { transform: scale(1.05); box-shadow: 0 5px 30px rgba(0,212,255,0.8); }
+#gameOver {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0,0,0,0.95);
+    padding: 40px;
+    border-radius: 20px;
+    text-align: center;
+    display: none;
+    z-index: 100;
+    border: 3px solid #00d4ff;
+    box-shadow: 0 0 40px rgba(0,212,255,0.5);
+}
+#gameOver h2 { color: #00d4ff; font-size: 48px; margin-bottom: 20px; text-shadow: 0 0 20px rgba(0,212,255,1); }
+#gameOver p { color: white; font-size: 24px; margin: 10px 0; }
+.btn {
+    background: linear-gradient(135deg, #0066ff, #00d4ff);
+    color: white;
+    border: none;
+    padding: 15px 40px;
+    font-size: 20px;
+    font-weight: 700;
+    border-radius: 30px;
+    cursor: pointer;
+    margin: 10px;
+    transition: all 0.3s;
+    box-shadow: 0 0 20px rgba(0,212,255,0.5);
+}
+.btn:hover { transform: scale(1.05); box-shadow: 0 5px 30px rgba(0,212,255,0.8); }
+#instructions {
+    position: absolute;
+    bottom: 30px;
+    color: rgba(0,212,255,0.7);
+    font-size: 14px;
+    text-align: center;
+    animation: pulse 2s infinite;
+    z-index: 10;
+}
+@keyframes pulse {
+    0%, 100% { opacity: 0.7; }
+    50% { opacity: 1; }
+}
+#shieldInfo {
+    position: absolute;
+    bottom: 70px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    z-index: 10;
+}
+#shieldText {
+    color: #ff00ff;
+    font-size: 14px;
+    font-weight: 700;
+    text-shadow: 0 0 10px rgba(255,0,255,0.8);
+    margin-bottom: 5px;
+}
+#shieldBarContainer {
+    width: 150px;
+    height: 8px;
+    background: rgba(255,0,255,0.3);
+    border: 2px solid #ff00ff;
+    border-radius: 5px;
+    overflow: hidden;
+}
+#shieldBar {
+    height: 100%;
+    background: linear-gradient(90deg, #ff00ff, #ff66ff);
+    width: 100%;
+    transition: width 0.1s linear;
+    box-shadow: 0 0 10px rgba(255,0,255,0.8);
+}
+#modifierText {
+    position: absolute;
+    top: 70px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #ff6600;
+    font-size: 18px;
+    font-weight: 700;
+    text-shadow: 0 0 15px rgba(255,102,0,1);
+    z-index: 10;
+    animation: pulse 2s infinite;
+}
+#elementText {
+    position: absolute;
+    top: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #00ffff;
+    font-size: 16px;
+    font-weight: 700;
+    text-shadow: 0 0 15px rgba(0,255,255,1);
+    z-index: 10;
+    animation: pulse 2s infinite;
+}
+#touchControls {
+    display: none;
+    position: absolute;
+    bottom: 20px;
+    width: 100%;
+    justify-content: center;
+    gap: 40px;
+    z-index: 10;
+}
+.touchBtn {
+    width: 80px;
+    height: 80px;
+    background: rgba(0,212,255,0.3);
+    border: 3px solid #00d4ff;
+    border-radius: 50%;
+    color: white;
+    font-size: 36px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 0 20px rgba(0,212,255,0.5);
+}
+.touchBtn:active { background: rgba(0,212,255,0.6); transform: scale(0.95); box-shadow: 0 0 30px rgba(0,212,255,0.8); }
+
+@media (max-width: 1024px) {
+    #canvas { max-width: 100%; height: auto; }
+    #ui { gap: 20px; font-size: 15px; }
+    .statValue { font-size: 26px; }
+}
+
+@media (max-width: 768px) {
+    #ui { gap: 15px; font-size: 13px; top: 10px; flex-wrap: wrap; }
+    .stat { min-width: 70px; }
+    .statValue { font-size: 20px; }
+    #instructions { font-size: 13px; bottom: 20px; }
+    #shieldInfo { bottom: 90px; }
+    #shieldText { font-size: 12px; }
+    #shieldBarContainer { width: 130px; height: 6px; }
+    #modifierText { font-size: 16px; top: 60px; }
+    #elementText { font-size: 14px; top: 85px; }
+    .upgradeBtn { min-width: 220px; font-size: 15px; padding: 15px 20px; }
+    #upgradeMenu { padding: 30px 20px; max-width: 90%; }
+    #upgradeMenu h2 { font-size: 26px; }
+    #gameOver { padding: 30px 20px; max-width: 90%; }
+    #gameOver h2 { font-size: 38px; }
+    #gameOver p { font-size: 20px; }
+}
+
+@media (max-width: 768px) and (pointer: coarse) {
+    #instructions { display: none; }
+    #shieldInfo { bottom: 120px; }
+    #touchControls { display: flex; }
+}
+
+@media (max-width: 480px) {
+    #ui { gap: 8px; font-size: 11px; }
+    .stat { min-width: 60px; }
+    .statValue { font-size: 16px; }
+    #shieldInfo { bottom: 110px; }
+    #shieldText { font-size: 11px; }
+    #shieldBarContainer { width: 100px; height: 5px; }
+    #modifierText { font-size: 14px; top: 55px; }
+    #elementText { font-size: 12px; top: 75px; }
+    #touchControls { gap: 20px; bottom: 15px; }
+    .touchBtn { width: 60px; height: 60px; font-size: 28px; }
+    #upgradeMenu { padding: 20px 15px; }
+    #upgradeMenu h2 { font-size: 20px; margin-bottom: 15px; }
+    .upgradeBtn { min-width: 180px; font-size: 13px; padding: 12px 15px; }
+    #gameOver { padding: 25px 15px; }
+    #gameOver h2 { font-size: 28px; margin-bottom: 15px; }
+    #gameOver p { font-size: 16px; margin: 8px 0; }
+    .btn { padding: 12px 30px; font-size: 16px; }
+}
+
+@media (max-width: 360px) {
+    #ui { gap: 6px; font-size: 10px; }
+    .statValue { font-size: 14px; }
+    #shieldBarContainer { width: 80px; }
+    .touchBtn { width: 55px; height: 55px; font-size: 24px; }
+    .upgradeBtn { min-width: 160px; font-size: 12px; }
+    #gameOver h2 { font-size: 24px; }
+    #gameOver p { font-size: 14px; }
+}
+
+@media (orientation: landscape) and (max-height: 500px) {
+    #ui { top: 5px; gap: 10px; font-size: 11px; }
+    .statValue { font-size: 18px; }
+    #shieldInfo { bottom: 60px; }
+    #touchControls { bottom: 10px; gap: 15px; }
+    .touchBtn { width: 50px; height: 50px; font-size: 24px; }
+    #upgradeMenu { padding: 15px; max-height: 90vh; overflow-y: auto; }
+    #upgradeMenu h2 { font-size: 18px; }
+    .upgradeBtn { padding: 10px 15px; font-size: 12px; }
+}

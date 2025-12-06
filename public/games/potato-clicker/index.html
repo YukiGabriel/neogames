@@ -51,6 +51,10 @@
             overflow-y: auto;
             max-height: calc(100vh - 30px);
         }
+        .panel::-webkit-scrollbar { width: 8px; }
+        .panel::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); border-radius: 10px; }
+        .panel::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
+        .panel::-webkit-scrollbar-thumb:hover { background: var(--primary); }
         .center {
             display: flex;
             flex-direction: column;
@@ -98,11 +102,13 @@
             width: 220px;
             height: 220px;
             cursor: pointer;
-            transition: transform 0.1s;
+            transition: transform 0.1s ease-out;
             filter: drop-shadow(0 10px 30px rgba(0,0,0,0.5));
             font-size: 11rem;
             -webkit-user-drag: none;
             -webkit-touch-callout: none;
+            will-change: transform;
+            touch-action: manipulation;
         }
         .potato:hover { transform: scale(1.05) rotate(5deg); }
         .potato:active { transform: scale(0.95) rotate(-5deg); animation: shake 0.3s; }
@@ -120,6 +126,7 @@
             animation: float 1s ease-out forwards;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.8), 0 0 10px var(--accent);
             z-index: 999;
+            will-change: transform, opacity;
         }
         @keyframes float {
             to { transform: translateY(-150px); opacity: 0; }
@@ -414,31 +421,52 @@
             .container {
                 grid-template-columns: 1fr;
                 padding: 10px;
+                gap: 10px;
             }
             h1 {
-                font-size: 2rem;
+                font-size: 1.8rem;
             }
             .potato {
-                width: 200px;
-                height: 200px;
-                font-size: 10rem;
+                width: 180px;
+                height: 180px;
+                font-size: 9rem;
             }
             .panel {
-                padding: 15px;
+                padding: 12px;
+                max-height: none;
             }
             .tabs {
-                flex-direction: column;
+                flex-wrap: wrap;
+                gap: 5px;
+            }
+            .tab {
+                flex: 1 1 calc(33.333% - 5px);
+                min-width: 80px;
+                padding: 10px 5px;
+                font-size: 0.8rem;
             }
             .skin {
-                font-size: 3rem;
-                padding: 10px;
-                margin: 5px;
+                font-size: 2.5rem;
+                padding: 8px;
+                margin: 3px;
             }
             .upgrade {
-                padding: 12px;
+                padding: 10px;
             }
             .upgrade-name {
-                font-size: 1rem;
+                font-size: 0.95rem;
+            }
+            .upgrade-cost {
+                font-size: 0.85rem;
+            }
+            .stats-box {
+                padding: 10px;
+            }
+            .count {
+                font-size: 1.6rem;
+            }
+            .section-title {
+                font-size: 1.1rem;
             }
         }
         .splash-screen {
@@ -674,42 +702,136 @@
             border-color: var(--accent);
         }
         @media (max-width: 768px) {
+            .container {
+                padding: 5px;
+            }
             h1 {
-                font-size: 1.5rem;
-                margin-bottom: 10px;
+                font-size: 1.4rem;
+                margin-bottom: 8px;
             }
             .count {
-                font-size: 1.8rem;
+                font-size: 1.5rem;
             }
             .per-second {
-                font-size: 1rem;
+                font-size: 0.9rem;
             }
             .potato {
-                width: 150px;
-                height: 150px;
-                font-size: 8rem;
+                width: 140px;
+                height: 140px;
+                font-size: 7rem;
             }
             .section-title {
-                font-size: 1.2rem;
+                font-size: 1rem;
+                padding-bottom: 6px;
             }
             .achievement {
+                padding: 8px;
+                gap: 8px;
+            }
+            .achievement-icon {
+                font-size: 1.8rem;
+            }
+            .achievement-name {
+                font-size: 0.9rem;
+            }
+            .achievement-desc {
+                font-size: 0.7rem;
+            }
+            .upgrade {
+                padding: 8px;
+                margin-bottom: 6px;
+            }
+            .upgrade-name {
+                font-size: 0.85rem;
+            }
+            .upgrade-cost {
+                font-size: 0.8rem;
+            }
+            .upgrade-info {
+                font-size: 0.75rem;
+            }
+            .skin {
+                font-size: 2rem;
+                padding: 6px;
+                margin: 2px;
+            }
+            .tab {
+                padding: 8px 4px;
+                font-size: 0.75rem;
+            }
+            .stats-box {
+                padding: 8px;
+                margin-bottom: 10px;
+            }
+            .stat-item {
                 padding: 10px;
                 gap: 10px;
             }
-            .achievement-icon {
+            .stat-icon {
                 font-size: 2rem;
             }
-            .achievement-name {
+            .stat-value {
+                font-size: 1.1rem;
+            }
+            .stat-label {
+                font-size: 0.8rem;
+            }
+            .leaderboard-item {
+                padding: 10px;
+                gap: 10px;
+            }
+            .leaderboard-rank {
+                font-size: 1.5rem;
+                min-width: 40px;
+            }
+            .leaderboard-name {
                 font-size: 1rem;
             }
+            .leaderboard-stats {
+                font-size: 0.8rem;
+            }
+            .prestige-btn {
+                padding: 12px;
+                font-size: 1rem;
+            }
+            .theme-btn {
+                padding: 10px;
+                font-size: 0.8rem;
+            }
+            .keybind-btn {
+                padding: 12px;
+                font-size: 0.9rem;
+            }
             .neo-logo { font-size: 5rem; }
-            .neo-text { font-size: 1.8rem; letter-spacing: 4px; }
+            .neo-text { font-size: 1.5rem; letter-spacing: 4px; }
             .logo-ring { width: 150px; height: 150px; }
             .logo-ring:nth-child(2) { width: 180px; height: 180px; }
             .logo-ring:nth-child(3) { width: 210px; height: 210px; }
-            .neo-text { font-size: 1.5rem; }
             .game-title { font-size: 2rem; }
             .loading-bar { width: 200px; }
+            .main-menu-title { font-size: 2.5rem; }
+            .main-menu-btn { width: 250px; padding: 15px; font-size: 1.1rem; }
+            .menu-btn { padding: 8px 15px; font-size: 0.85rem; }
+        }
+        
+        @media (max-width: 480px) {
+            h1 { font-size: 1.2rem; }
+            .potato { width: 120px; height: 120px; font-size: 6rem; }
+            .count { font-size: 1.3rem; }
+            .per-second { font-size: 0.85rem; }
+            .panel { padding: 10px; }
+            .section-title { font-size: 0.95rem; }
+            .upgrade-name { font-size: 0.8rem; }
+            .upgrade-cost { font-size: 0.75rem; }
+            .skin { font-size: 1.8rem; padding: 5px; }
+            .achievement-icon { font-size: 1.5rem; }
+            .achievement-name { font-size: 0.85rem; }
+            .stat-icon { font-size: 1.8rem; }
+            .stat-value { font-size: 1rem; }
+            .leaderboard-rank { font-size: 1.3rem; }
+            .leaderboard-name { font-size: 0.9rem; }
+            .main-menu-title { font-size: 2rem; }
+            .main-menu-btn { width: 200px; padding: 12px; font-size: 1rem; }
         }
     </style>
 </head>

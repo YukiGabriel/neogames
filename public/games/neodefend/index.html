@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeoDefend - NeoGames</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="splash">
+        <div class="particles"></div>
+        <div class="logo-container">
+            <div class="logo-ring"></div>
+            <div class="logo-ring"></div>
+            <div class="logo-ring"></div>
+            <div class="logo">🛡️</div>
+        </div>
+        <div class="gameTitle">NEODEFEND</div>
+    </div>
+
+    <div class="loadingScreen">
+        <div class="loadingTitle">NEODEFEND</div>
+        <div class="loadingBar"><div class="loadingFill"></div></div>
+        <div class="loadingText">Inicializando Sistema de Defesa...</div>
+    </div>
+
+    <div class="main-menu" id="mainMenu">
+        <div class="main-menu-title">🛡️ NEODEFEND</div>
+        <button class="main-menu-btn primary" onclick="startGame()">▶️ Jogar</button>
+        <button class="main-menu-btn" onclick="showCredits()">ℹ️ Créditos</button>
+    </div>
+
+    <button class="menu-btn" onclick="showMainMenu()" id="menuBtn">🏠 Menu</button>
+
+    <div id="gameContainer" class="hidden">
+        <div id="ui">
+            <div class="stat">
+                <div>ONDA</div>
+                <div class="statValue" id="wave">1</div>
+            </div>
+            <div class="stat">
+                <div>PONTOS</div>
+                <div class="statValue" id="score">0</div>
+            </div>
+            <div class="stat">
+                <div>CRISTAIS</div>
+                <div class="statValue" id="crystals">0</div>
+            </div>
+            <div class="stat">
+                <div>VIDA</div>
+                <div class="statValue" id="health">3</div>
+            </div>
+        </div>
+
+        <canvas id="canvas"></canvas>
+
+        <div id="instructions">
+            ← / → ou A / D PARA MOVER • TIRO AUTOMÁTICO
+        </div>
+
+        <div id="shieldInfo">
+            <div id="shieldText">PRONTO</div>
+            <div id="shieldBarContainer">
+                <div id="shieldBar"></div>
+            </div>
+        </div>
+
+        <div id="modifierText" style="display:none;"></div>
+        <div id="elementText" style="display:none;"></div>
+
+        <div id="touchControls">
+            <button class="touchBtn" id="btnLeft">←</button>
+            <button class="touchBtn" id="btnShield">🛡</button>
+            <button class="touchBtn" id="btnRight">→</button>
+        </div>
+
+        <div id="upgradeMenu">
+            <h2>ESCOLHA UM UPGRADE</h2>
+            <button class="upgradeBtn" onclick="selectUpgrade(0)" id="upgrade1"></button>
+            <button class="upgradeBtn" onclick="selectUpgrade(1)" id="upgrade2"></button>
+            <button class="upgradeBtn" onclick="selectUpgrade(2)" id="upgrade3"></button>
+        </div>
+
+        <div id="gameOver">
+            <h2>TORRE DESTRUÍDA</h2>
+            <p>Pontuação: <span id="finalScore">0</span></p>
+            <p>Onda Alcançada: <span id="finalWave">0</span></p>
+            <button class="btn" onclick="location.reload()">REINICIAR</button>
+        </div>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>

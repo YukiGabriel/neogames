@@ -10,10 +10,7 @@ class Patience {
         window.addEventListener('resize', () => this.resize());
         window.addEventListener('orientationchange', () => setTimeout(() => this.resize(), 100));
         
-        setTimeout(() => {
-            document.getElementById('splash').style.display = 'none';
-            this.gameLoop();
-        }, 4000);
+        this.gameLoop();
     }
 
     setupCanvas() {
@@ -416,6 +413,7 @@ class Patience {
     restart() {
         document.getElementById('gameOver').style.display = 'none';
         this.init();
+        this.gameOver = false;
     }
 
     gameLoop() {
@@ -425,4 +423,25 @@ class Patience {
     }
 }
 
-const game = new Patience();
+let game;
+
+function startGame() {
+    document.getElementById('mainMenu').classList.add('hidden');
+    document.getElementById('gameContainer').classList.remove('hidden');
+    document.getElementById('menuBtn').style.display = 'block';
+    if (!game) game = new Patience();
+}
+
+function showMainMenu() {
+    document.getElementById('mainMenu').classList.remove('hidden');
+    document.getElementById('gameContainer').classList.add('hidden');
+    document.getElementById('menuBtn').style.display = 'none';
+    if (game) {
+        game.gameOver = true;
+        document.getElementById('gameOver').style.display = 'none';
+    }
+}
+
+function showCredits() {
+    alert('💫 Patience\n\nEstabilidade Quântica!\nMantenha o núcleo no centro.\n\n© 2024 NeoGames');
+}

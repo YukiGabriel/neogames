@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Generate NeoRun Thumbnail</title>
+</head>
+<body>
+    <canvas id="canvas" width="400" height="300"></canvas>
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        const bgGrad = ctx.createLinearGradient(0, 0, 0, 300);
+        bgGrad.addColorStop(0, '#000510');
+        bgGrad.addColorStop(0.5, '#001030');
+        bgGrad.addColorStop(1, '#000520');
+        ctx.fillStyle = bgGrad;
+        ctx.fillRect(0, 0, 400, 300);
+        
+        ctx.strokeStyle = 'rgba(0,212,255,0.15)';
+        ctx.lineWidth = 1;
+        for (let x = 0; x < 400; x += 30) {
+            for (let y = 0; y < 300; y += 30) {
+                ctx.strokeRect(x, y, 30, 30);
+            }
+        }
+        
+        for (let i = 0; i < 3; i++) {
+            const y = 50 + i * 80;
+            const grad = ctx.createLinearGradient(0, y, 400, y);
+            grad.addColorStop(0, 'rgba(0,212,255,0)');
+            grad.addColorStop(0.5, 'rgba(0,212,255,0.2)');
+            grad.addColorStop(1, 'rgba(0,212,255,0)');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, y, 400, 40);
+        }
+        
+        [90, 170, 250].forEach(lane => {
+            const grad = ctx.createLinearGradient(0, lane, 0, lane + 20);
+            grad.addColorStop(0, 'rgba(0,212,255,0.3)');
+            grad.addColorStop(0.5, 'rgba(0,212,255,0.6)');
+            grad.addColorStop(1, 'rgba(0,212,255,0.3)');
+            ctx.strokeStyle = grad;
+            ctx.lineWidth = 2;
+            ctx.setLineDash([15, 8]);
+            ctx.beginPath();
+            ctx.moveTo(0, lane);
+            ctx.lineTo(400, lane);
+            ctx.stroke();
+            ctx.setLineDash([]);
+        });
+        
+        ctx.shadowBlur = 25;
+        ctx.shadowColor = '#00d4ff';
+        const pGrad = ctx.createLinearGradient(50, 150, 90, 200);
+        pGrad.addColorStop(0, '#00d4ff');
+        pGrad.addColorStop(0.5, '#0099ff');
+        pGrad.addColorStop(1, '#0066ff');
+        ctx.fillStyle = pGrad;
+        ctx.fillRect(50, 150, 40, 50);
+        ctx.fillStyle = 'rgba(255,255,255,0.3)';
+        ctx.fillRect(55, 155, 10, 40);
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = '#fff';
+        ctx.fillStyle = '#fff';
+        ctx.beginPath();
+        ctx.arc(82, 165, 4, 0, Math.PI * 2);
+        ctx.arc(82, 178, 4, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#00ffff';
+        for (let i = 0; i < 3; i++) {
+            ctx.fillRect(40 - i * 3, 173, 3, 4);
+        }
+        ctx.shadowBlur = 0;
+        
+        ctx.shadowBlur = 25;
+        ctx.shadowColor = '#ff0066';
+        const lGrad = ctx.createLinearGradient(200, 140, 230, 200);
+        lGrad.addColorStop(0, '#ff0066');
+        lGrad.addColorStop(0.5, '#ff3388');
+        lGrad.addColorStop(1, '#ff0066');
+        ctx.fillStyle = lGrad;
+        ctx.fillRect(200, 140, 30, 60);
+        ctx.fillStyle = 'rgba(255,255,255,0.5)';
+        ctx.fillRect(205, 150, 5, 40);
+        ctx.shadowBlur = 0;
+        
+        ctx.shadowBlur = 25;
+        ctx.shadowColor = '#ff6600';
+        const dGrad = ctx.createRadialGradient(320, 100, 5, 320, 100, 30);
+        dGrad.addColorStop(0, '#ffaa00');
+        dGrad.addColorStop(0.5, '#ff6600');
+        dGrad.addColorStop(1, '#cc3300');
+        ctx.fillStyle = dGrad;
+        ctx.fillRect(295, 80, 50, 40);
+        ctx.fillStyle = 'rgba(255,255,255,0.3)';
+        ctx.fillRect(300, 85, 15, 8);
+        ctx.fillRect(330, 85, 15, 8);
+        ctx.shadowBlur = 15;
+        ctx.shadowColor = '#ff0000';
+        ctx.fillStyle = '#ff0000';
+        ctx.beginPath();
+        ctx.arc(320, 100, 6, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.shadowBlur = 0;
+        
+        ctx.save();
+        ctx.translate(150, 250);
+        ctx.rotate(Math.PI / 4);
+        ctx.shadowBlur = 20;
+        ctx.shadowColor = '#00d4ff';
+        const cGrad = ctx.createRadialGradient(0, 0, 0, 0, 0, 15);
+        cGrad.addColorStop(0, '#ffffff');
+        cGrad.addColorStop(0.4, '#00d4ff');
+        cGrad.addColorStop(1, '#0066ff');
+        ctx.fillStyle = cGrad;
+        ctx.fillRect(-10, -10, 20, 20);
+        ctx.strokeStyle = '#fff';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(-10, -10, 20, 20);
+        ctx.fillStyle = 'rgba(255,255,255,0.8)';
+        ctx.fillRect(-5, -5, 10, 10);
+        ctx.restore();
+        ctx.shadowBlur = 0;
+        
+        ctx.shadowBlur = 30;
+        ctx.shadowColor = '#00d4ff';
+        ctx.font = 'bold 60px Arial';
+        ctx.fillStyle = '#00d4ff';
+        ctx.textAlign = 'center';
+        ctx.fillText('NEORUN', 200, 50);
+        ctx.shadowBlur = 0;
+        
+        ctx.font = 'bold 16px Arial';
+        ctx.fillStyle = 'rgba(255,255,255,0.8)';
+        ctx.fillText('CORRIDA INFINITA QUÂNTICA', 200, 280);
+        
+        canvas.toBlob(blob => {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'neorun.jpg';
+            a.click();
+        }, 'image/jpeg', 0.95);
+    </script>
+</body>
+</html>

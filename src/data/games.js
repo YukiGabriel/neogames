@@ -47,18 +47,7 @@ export const games = [
     plays: 0,
     featured: true
   },
-  {
-    id: 5,
-    title: "Code Recall",
-    slug: "code-recall",
-    category: "Quebra-cabeça",
-    thumbnail: "/thumbnails/code_recall.jpg",
-    description: "Jogo de memória visual! Observe e repita a sequência de cores. Até onde sua memória consegue chegar?",
-    instructions: "Observe a sequência de cores que acende. Depois, clique nos botões na mesma ordem. A cada rodada, uma nova cor é adicionada!",
-    embedUrl: "/games/code-recall/index.html",
-    plays: 0,
-    featured: true
-  },
+
   {
     id: 6,
     title: "Patience",
@@ -92,6 +81,30 @@ export const games = [
     description: "Sinuca de precisão digital! Controle mira, força e efeito da bola branca. Física realista com estética néon futurista.",
     instructions: "Arraste para mirar. Clique para ajustar força. Use o controle de efeito para aplicar spin na bola branca. Encaçape suas bolas e depois a bola 8!",
     embedUrl: "/games/neopool/index.html",
+    plays: 0,
+    featured: true
+  },
+  {
+    id: 9,
+    title: "NeoRun",
+    slug: "neorun",
+    category: "Ação",
+    thumbnail: "/thumbnails/NeoRun.png",
+    description: "Corrida infinita quântica! Desvie de obstáculos em 3 faixas, colete bits de energia e sobreviva o máximo possível.",
+    instructions: "↑/W e ↓/S para trocar de faixa. ESPAÇO para saltar, SHIFT para abaixar. Desvie de lasers, drones e fendas quânticas!",
+    embedUrl: "/games/neorun/index.html",
+    plays: 0,
+    featured: true
+  },
+  {
+    id: 10,
+    title: "NeoDefend",
+    slug: "neodefend",
+    category: "Estratégia",
+    thumbnail: "/thumbnails/Neodefend.jpg",
+    description: "Defesa vertical estratégica! Controle sua nave, destrua inimigos e colete upgrades roguelite para sobreviver.",
+    instructions: "← / → ou A / D para mover. ESPAÇO para Campo de Força. Tiro automático. Colete cristais para upgrades!",
+    embedUrl: "/games/neodefend/index.html",
     plays: 0,
     featured: true
   }

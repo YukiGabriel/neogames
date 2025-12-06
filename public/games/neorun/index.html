@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeoRun - NeoGames</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="splash">
+        <div class="particles"></div>
+        <div class="logo-container">
+            <div class="logo-ring"></div>
+            <div class="logo-ring"></div>
+            <div class="logo-ring"></div>
+            <div class="logo">🦖</div>
+        </div>
+        <div class="gameTitle">NEORUN</div>
+    </div>
+
+    <div class="loadingScreen">
+        <div class="loadingTitle">NEORUN</div>
+        <div class="loadingBar"><div class="loadingFill"></div></div>
+        <div class="loadingText">Inicializando Sistema Quântico...</div>
+    </div>
+
+    <div class="main-menu" id="mainMenu">
+        <div class="main-menu-title">🦖 NEORUN</div>
+        <button class="main-menu-btn primary" onclick="startGame()">▶️ Jogar</button>
+        <button class="main-menu-btn" onclick="showCredits()">ℹ️ Créditos</button>
+    </div>
+
+    <button class="menu-btn" onclick="showMainMenu()" id="menuBtn">🏠 Menu</button>
+
+    <div id="gameContainer" class="hidden">
+        <div id="ui">
+            <div class="stat">
+                <div>DISTÂNCIA</div>
+                <div class="statValue" id="distance">0m</div>
+            </div>
+            <div class="stat">
+                <div>PONTOS</div>
+                <div class="statValue" id="score">0</div>
+            </div>
+            <div class="stat">
+                <div>BITS</div>
+                <div class="statValue" id="bits">0</div>
+            </div>
+        </div>
+
+        <div id="streak">DESVIOS PERFEITOS: <span id="streakValue">0</span></div>
+
+        <canvas id="canvas"></canvas>
+
+        <div id="instructions">
+            <div>↑ / W - FAIXA SUPERIOR | ↓ / S - FAIXA INFERIOR</div>
+            <div>ESPAÇO - SALTAR | SHIFT - ABAIXAR</div>
+        </div>
+
+        <div id="gameOver">
+            <h2>SISTEMA COLAPSADO</h2>
+            <p>Distância: <span id="finalDistance">0</span>m</p>
+            <p>Pontos: <span id="finalScore">0</span></p>
+            <p>Bits Coletados: <span id="finalBits">0</span></p>
+            <p>Desvios Perfeitos: <span id="finalStreak">0</span></p>
+            <button class="btn" onclick="location.reload()">REINICIAR</button>
+        </div>
+
+        <div id="touchControls">
+            <button class="touchBtn" id="btnUp">↑</button>
+            <button class="touchBtn" id="btnJump">⬆</button>
+            <button class="touchBtn" id="btnDuck">⬇</button>
+            <button class="touchBtn" id="btnDown">↓</button>
+        </div>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>

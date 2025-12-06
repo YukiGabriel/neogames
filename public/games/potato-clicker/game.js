@@ -28,7 +28,11 @@ const codes = {
     'SPEEDUP': { type: 'production', value: 1000000, desc: '1M batatas/seg' },
     'STARTER': { type: 'potatoes', value: 100000, desc: '100K batatas iniciais' },
     'LUCKY7': { type: 'clickPower', value: 7777, desc: '7777 de poder de clique' },
-    'GOLDENPOTATO': { type: 'potatoes', value: 50000000, desc: '50M de batatas' }
+    'GOLDENPOTATO': { type: 'potatoes', value: 50000000, desc: '50M de batatas' },
+    'MILOS': { type: 'video', value: '/videos/milos.mp4', desc: '???' },
+    'CRENTUE': { type: 'music', value: '/videos/crentue.mp4', desc: 'Música: É o salmos' },
+    'POTETO': { type: 'poteto', value: '/videos/poteto.mp4', desc: '???' },
+    'ADMIN': { type: 'terminal', value: true, desc: 'Terminal Admin' }
 };
 
 const upgrades = [
@@ -668,7 +672,7 @@ function redeemCode() {
         return;
     }
     
-    if (usedCodes.includes(code)) {
+    if (usedCodes.includes(code) && code !== 'MILOS' && code !== 'CRENTUE' && code !== 'POTETO') {
         const usedText = typeof t === 'function' ? t('codeUsed') : 'Código já usado!';
         showNotification(`❌ ${usedText}`);
         input.value = '';
@@ -703,6 +707,26 @@ function redeemCode() {
         case 'production':
             potatoesPerSecond += reward.value;
             break;
+        case 'video':
+            showCountdown(() => showVideo(reward.value));
+            input.value = '';
+            return;
+        case 'music':
+            showMusicPlayer(reward.value, 'Crentue', 'É o salmos');
+            showNotification('🎵 Música acionada: Crentue - É o salmos');
+            input.value = '';
+            return;
+        case 'poteto':
+            showCountdownPoteto(() => showVideoPoteto(reward.value));
+            potatoes += 1;
+            totalPotatoesEarned += 1;
+            updateDisplay();
+            input.value = '';
+            return;
+        case 'terminal':
+            openAdminTerminal();
+            input.value = '';
+            return;
     }
     
     usedCodes.push(code);
@@ -716,9 +740,416 @@ function redeemCode() {
     checkAchievements();
 }
 
+function showCountdown(callback) {
+    const overlay = document.createElement('div');
+    overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);z-index:10000;display:flex;flex-direction:column;align-items:center;justify-content:center';
+    
+    const message = document.createElement('div');
+    message.textContent = 'VOCÊ ENCONTROU O MILOS!';
+    message.style.cssText = 'font-size:4rem;font-weight:900;color:#ffd700;text-shadow:0 0 30px rgba(255,215,0,0.8);margin-bottom:50px;animation:pulse 0.5s infinite';
+    
+    const counter = document.createElement('div');
+    counter.style.cssText = 'font-size:10rem;font-weight:900;color:#fff;text-shadow:0 0 50px rgba(255,255,255,0.8)';
+    
+    overlay.appendChild(message);
+    overlay.appendChild(counter);
+    document.body.appendChild(overlay);
+    
+    let count = 3;
+    counter.textContent = count;
+    
+    const interval = setInterval(() => {
+        count--;
+        if (count > 0) {
+            counter.textContent = count;
+        } else {
+            clearInterval(interval);
+            overlay.remove();
+            callback();
+        }
+    }, 1000);
+}
+
+function showCountdownPoteto(callback) {
+    const overlay = document.createElement('div');
+    overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);z-index:10000;display:flex;flex-direction:column;align-items:center;justify-content:center';
+    
+    const message = document.createElement('div');
+    message.textContent = 'VOCÊ ENCONTROU A POTETO!';
+    message.style.cssText = 'font-size:4rem;font-weight:900;color:#ff69b4;text-shadow:0 0 30px rgba(255,105,180,0.8);margin-bottom:50px;animation:pulse 0.5s infinite';
+    
+    const counter = document.createElement('div');
+    counter.style.cssText = 'font-size:10rem;font-weight:900;color:#fff;text-shadow:0 0 50px rgba(255,255,255,0.8)';
+    
+    overlay.appendChild(message);
+    overlay.appendChild(counter);
+    document.body.appendChild(overlay);
+    
+    let count = 3;
+    counter.textContent = count;
+    
+    const interval = setInterval(() => {
+        count--;
+        if (count > 0) {
+            counter.textContent = count;
+        } else {
+            clearInterval(interval);
+            overlay.remove();
+            callback();
+        }
+    }, 1000);
+}
+
+function showVideo(videoPath) {
+    const overlay = document.createElement('div');
+    overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);z-index:10000;display:flex;align-items:center;justify-content:center';
+    
+    const video = document.createElement('video');
+    video.src = videoPath;
+    video.controls = true;
+    video.autoplay = true;
+    video.style.cssText = 'max-width:90%;max-height:90%;border-radius:10px;box-shadow:0 0 50px rgba(0,0,0,0.8)';
+    
+    const closeBtn = document.createElement('button');
+    closeBtn.textContent = '✕';
+    closeBtn.style.cssText = 'position:absolute;top:20px;right:20px;background:rgba(255,0,0,0.8);color:white;border:none;width:50px;height:50px;border-radius:50%;font-size:24px;cursor:pointer;z-index:10001';
+    closeBtn.onclick = () => {
+        video.pause();
+        overlay.remove();
+    };
+    
+    video.onended = () => overlay.remove();
+    
+    overlay.appendChild(video);
+    overlay.appendChild(closeBtn);
+    document.body.appendChild(overlay);
+}
+
+function showVideoPoteto(videoPath) {
+    const overlay = document.createElement('div');
+    overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);z-index:10000;display:flex;align-items:center;justify-content:center';
+    
+    const video = document.createElement('video');
+    video.src = videoPath;
+    video.controls = true;
+    video.autoplay = true;
+    video.style.cssText = 'max-width:90%;max-height:90%;border-radius:10px;box-shadow:0 0 50px rgba(255,105,180,0.8);border:3px solid #ff69b4';
+    
+    const closeBtn = document.createElement('button');
+    closeBtn.textContent = '✕';
+    closeBtn.style.cssText = 'position:absolute;top:20px;right:20px;background:rgba(255,105,180,0.8);color:white;border:none;width:50px;height:50px;border-radius:50%;font-size:24px;cursor:pointer;z-index:10001';
+    closeBtn.onclick = () => {
+        video.pause();
+        overlay.remove();
+    };
+    
+    video.onended = () => overlay.remove();
+    
+    overlay.appendChild(video);
+    overlay.appendChild(closeBtn);
+    document.body.appendChild(overlay);
+}
+
+function showMusicPlayer(videoPath, artist, title) {
+    const player = document.createElement('div');
+    player.id = 'musicPlayer';
+    player.style.cssText = 'position:fixed;bottom:20px;right:20px;width:350px;background:linear-gradient(135deg,#1db954,#1ed760);border-radius:15px;padding:15px;box-shadow:0 10px 40px rgba(0,0,0,0.5);z-index:9999;animation:slideInPlayer 0.5s ease-out';
+    
+    const style = document.createElement('style');
+    style.textContent = '@keyframes slideInPlayer{from{transform:translateY(100px);opacity:0}to{transform:translateY(0);opacity:1}}';
+    document.head.appendChild(style);
+    
+    const header = document.createElement('div');
+    header.style.cssText = 'display:flex;justify-content:space-between;align-items:center;margin-bottom:10px';
+    
+    const logo = document.createElement('div');
+    logo.textContent = '🎵 Music Player';
+    logo.style.cssText = 'font-weight:700;color:#fff;font-size:14px';
+    
+    const btnGroup = document.createElement('div');
+    btnGroup.style.cssText = 'display:flex;gap:5px';
+    
+    const hideBtn = document.createElement('button');
+    hideBtn.textContent = '−';
+    hideBtn.style.cssText = 'background:rgba(0,0,0,0.3);color:#fff;border:none;width:25px;height:25px;border-radius:50%;cursor:pointer;font-size:18px;transition:all 0.3s;line-height:1';
+    hideBtn.onmouseover = () => hideBtn.style.background = 'rgba(255,255,255,0.2)';
+    hideBtn.onmouseout = () => hideBtn.style.background = 'rgba(0,0,0,0.3)';
+    
+    const closeBtn = document.createElement('button');
+    closeBtn.textContent = '✕';
+    closeBtn.style.cssText = 'background:rgba(0,0,0,0.3);color:#fff;border:none;width:25px;height:25px;border-radius:50%;cursor:pointer;font-size:14px;transition:all 0.3s';
+    closeBtn.onmouseover = () => closeBtn.style.background = 'rgba(255,0,0,0.8)';
+    closeBtn.onmouseout = () => closeBtn.style.background = 'rgba(0,0,0,0.3)';
+    closeBtn.onclick = () => {
+        video.pause();
+        player.remove();
+    };
+    
+    btnGroup.appendChild(hideBtn);
+    btnGroup.appendChild(closeBtn);
+    header.appendChild(logo);
+    header.appendChild(btnGroup);
+    
+    const video = document.createElement('video');
+    video.src = videoPath;
+    video.style.cssText = 'width:100%;border-radius:10px;margin-bottom:10px';
+    
+    const info = document.createElement('div');
+    info.style.cssText = 'margin-bottom:10px';
+    
+    const songTitle = document.createElement('div');
+    songTitle.textContent = title;
+    songTitle.style.cssText = 'font-weight:700;color:#fff;font-size:16px;margin-bottom:3px';
+    
+    const artistName = document.createElement('div');
+    artistName.textContent = artist;
+    artistName.style.cssText = 'color:rgba(255,255,255,0.8);font-size:13px';
+    
+    info.appendChild(songTitle);
+    info.appendChild(artistName);
+    
+    const controls = document.createElement('div');
+    controls.style.cssText = 'display:flex;align-items:center;gap:10px';
+    
+    const playBtn = document.createElement('button');
+    playBtn.textContent = '▶️';
+    playBtn.style.cssText = 'background:#fff;color:#1db954;border:none;width:40px;height:40px;border-radius:50%;cursor:pointer;font-size:16px;transition:all 0.3s;box-shadow:0 3px 10px rgba(0,0,0,0.3)';
+    playBtn.onmouseover = () => playBtn.style.transform = 'scale(1.1)';
+    playBtn.onmouseout = () => playBtn.style.transform = 'scale(1)';
+    
+    let isPlaying = false;
+    playBtn.onclick = () => {
+        if (isPlaying) {
+            video.pause();
+            playBtn.textContent = '▶️';
+        } else {
+            video.play();
+            playBtn.textContent = '⏸️';
+        }
+        isPlaying = !isPlaying;
+    };
+    
+    const progressBar = document.createElement('div');
+    progressBar.style.cssText = 'flex:1;height:5px;background:rgba(255,255,255,0.3);border-radius:5px;overflow:hidden;cursor:pointer';
+    
+    const progress = document.createElement('div');
+    progress.style.cssText = 'height:100%;background:#fff;width:0%;transition:width 0.1s';
+    
+    progressBar.appendChild(progress);
+    
+    video.ontimeupdate = () => {
+        const percent = (video.currentTime / video.duration) * 100;
+        progress.style.width = percent + '%';
+    };
+    
+    progressBar.onclick = (e) => {
+        const rect = progressBar.getBoundingClientRect();
+        const percent = (e.clientX - rect.left) / rect.width;
+        video.currentTime = percent * video.duration;
+    };
+    
+    const volumeBtn = document.createElement('button');
+    volumeBtn.textContent = '🔊';
+    volumeBtn.style.cssText = 'background:rgba(255,255,255,0.2);color:#fff;border:none;width:35px;height:35px;border-radius:50%;cursor:pointer;font-size:14px;transition:all 0.3s';
+    volumeBtn.onmouseover = () => volumeBtn.style.background = 'rgba(255,255,255,0.3)';
+    volumeBtn.onmouseout = () => volumeBtn.style.background = 'rgba(255,255,255,0.2)';
+    volumeBtn.onclick = () => {
+        video.muted = !video.muted;
+        volumeBtn.textContent = video.muted ? '🔇' : '🔊';
+    };
+    
+    controls.appendChild(playBtn);
+    controls.appendChild(progressBar);
+    controls.appendChild(volumeBtn);
+    
+    const content = document.createElement('div');
+    content.appendChild(video);
+    content.appendChild(info);
+    content.appendChild(controls);
+    
+    player.appendChild(header);
+    player.appendChild(content);
+    
+    let isHidden = false;
+    hideBtn.onclick = () => {
+        if (isHidden) {
+            content.style.display = 'block';
+            player.style.width = '350px';
+            hideBtn.textContent = '−';
+        } else {
+            content.style.display = 'none';
+            player.style.width = '200px';
+            hideBtn.textContent = '+';
+        }
+        isHidden = !isHidden;
+    };
+    
+    document.body.appendChild(player);
+}
+
+function openAdminTerminal() {
+    const overlay = document.createElement('div');
+    overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);z-index:10000;display:flex;align-items:center;justify-content:center;font-family:monospace';
+    
+    const terminal = document.createElement('div');
+    terminal.style.cssText = 'width:80%;height:80%;background:#000;border:2px solid #0f0;border-radius:10px;padding:20px;overflow-y:auto;color:#0f0;font-size:14px';
+    
+    const output = document.createElement('div');
+    output.id = 'terminalOutput';
+    
+    const inputLine = document.createElement('div');
+    inputLine.style.cssText = 'display:flex;margin-top:10px';
+    inputLine.innerHTML = '<span style="color:#0f0">admin@potato:~$ </span>';
+    
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.style.cssText = 'flex:1;background:transparent;border:none;color:#0f0;outline:none;font-family:monospace;font-size:14px;margin-left:5px';
+    
+    const closeBtn = document.createElement('button');
+    closeBtn.textContent = '✕';
+    closeBtn.style.cssText = 'position:absolute;top:20px;right:20px;background:rgba(255,0,0,0.8);color:white;border:none;width:40px;height:40px;border-radius:50%;font-size:20px;cursor:pointer;z-index:10001';
+    closeBtn.onclick = () => overlay.remove();
+    
+    const printLine = (text, color = '#0f0') => {
+        const line = document.createElement('div');
+        line.style.color = color;
+        line.textContent = text;
+        output.appendChild(line);
+        terminal.scrollTop = terminal.scrollHeight;
+    };
+    
+    printLine('=== POTATO CLICKER ADMIN TERMINAL ===');
+    printLine('Digite "help" para ver comandos disponíveis');
+    printLine('');
+    
+    const commands = {
+        help: () => {
+            printLine('Comandos disponíveis:');
+            printLine('  help - Mostra esta mensagem');
+            printLine('  status - Mostra status do jogo');
+            printLine('  set potatoes <valor> - Define batatas');
+            printLine('  set clickpower <valor> - Define poder de clique');
+            printLine('  set production <valor> - Define produção/seg');
+            printLine('  set prestige <valor> - Define nível de prestígio');
+            printLine('  unlock skins - Desbloqueia todas as skins');
+            printLine('  unlock achievements - Desbloqueia todas conquistas');
+            printLine('  reset - Reseta o jogo');
+            printLine('  clear - Limpa o terminal');
+            printLine('  exit - Fecha o terminal');
+        },
+        status: () => {
+            printLine(`Batatas: ${formatNumber(potatoes)}`);
+            printLine(`Poder de Clique: ${formatNumber(clickPower)}`);
+            printLine(`Produção/seg: ${formatNumber(potatoesPerSecond)}`);
+            printLine(`Prestígio: ${prestigeLevel} (x${prestigeMultiplier})`);
+            printLine(`Total de Cliques: ${formatNumber(totalClicks)}`);
+            printLine(`Tempo de Jogo: ${Math.floor((Date.now() - gameStartTime) / 1000)}s`);
+        },
+        set: (args) => {
+            if (!args[0] || !args[1]) {
+                printLine('Uso: set <variável> <valor>', '#ff0');
+                return;
+            }
+            const value = parseFloat(args[1]);
+            if (isNaN(value)) {
+                printLine('Valor inválido', '#f00');
+                return;
+            }
+            switch(args[0]) {
+                case 'potatoes':
+                    potatoes = value;
+                    totalPotatoesEarned += value;
+                    printLine(`Batatas definidas para ${formatNumber(value)}`);
+                    break;
+                case 'clickpower':
+                    clickPower = value;
+                    printLine(`Poder de clique definido para ${formatNumber(value)}`);
+                    break;
+                case 'production':
+                    potatoesPerSecond = value;
+                    printLine(`Produção definida para ${formatNumber(value)}/seg`);
+                    break;
+                case 'prestige':
+                    prestigeLevel = Math.floor(value);
+                    prestigeMultiplier = prestigeLevel + 1;
+                    printLine(`Prestígio definido para ${prestigeLevel}`);
+                    break;
+                default:
+                    printLine('Variável desconhecida', '#f00');
+            }
+            updateDisplay();
+            renderUpgrades();
+        },
+        unlock: (args) => {
+            if (!args[0]) {
+                printLine('Uso: unlock <skins|achievements>', '#ff0');
+                return;
+            }
+            if (args[0] === 'skins') {
+                skins.forEach(s => s.unlocked = true);
+                renderSkins();
+                printLine('Todas as skins desbloqueadas');
+            } else if (args[0] === 'achievements') {
+                achievements.forEach(a => a.unlocked = true);
+                renderAchievements();
+                printLine('Todas as conquistas desbloqueadas');
+            } else {
+                printLine('Opção desconhecida', '#f00');
+            }
+        },
+        reset: () => {
+            if (confirm('Resetar todo o progresso?')) {
+                localStorage.removeItem('potatoClickerSave');
+                localStorage.removeItem('usedCodes');
+                localStorage.removeItem('playerName');
+                localStorage.removeItem('leaderboard');
+                localStorage.removeItem('uiTheme');
+                localStorage.removeItem('clickKeybind');
+                localStorage.removeItem('neopoolLang');
+                printLine('Todos os dados foram resetados!', '#0f0');
+                setTimeout(() => location.reload(), 1000);
+            }
+        },
+        clear: () => {
+            output.innerHTML = '';
+        },
+        exit: () => {
+            overlay.remove();
+        }
+    };
+    
+    input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            const cmd = input.value.trim();
+            if (cmd) {
+                printLine(`admin@potato:~$ ${cmd}`, '#0ff');
+                const parts = cmd.split(' ');
+                const command = parts[0].toLowerCase();
+                const args = parts.slice(1);
+                
+                if (commands[command]) {
+                    commands[command](args);
+                } else {
+                    printLine(`Comando não encontrado: ${command}`, '#f00');
+                }
+                printLine('');
+            }
+            input.value = '';
+        }
+    });
+    
+    inputLine.appendChild(input);
+    terminal.appendChild(output);
+    terminal.appendChild(inputLine);
+    overlay.appendChild(terminal);
+    overlay.appendChild(closeBtn);
+    document.body.appendChild(overlay);
+    input.focus();
+}
+
 function showNotification(msg) {
     const n = document.createElement('div');
-    n.style.cssText = `position:fixed;top:20px;right:20px;background:rgba(0,0,0,0.9);color:var(--accent);padding:20px;border-radius:10px;font-size:1.2rem;z-index:1000;animation:slideIn 0.5s;box-shadow:0 5px 20px rgba(0,0,0,0.5)`;
+    n.style.cssText = `position:fixed;top:20px;right:20px;background:rgba(0,0,0,0.9);color:var(--accent);padding:20px;border-radius:10px;font-size:1.2rem;z-index:9999;animation:slideIn 0.5s;box-shadow:0 5px 20px rgba(0,0,0,0.5)`;
     n.textContent = msg;
     document.body.appendChild(n);
     setTimeout(() => n.remove(), 3000);

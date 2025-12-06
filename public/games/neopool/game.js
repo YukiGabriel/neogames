@@ -23,6 +23,8 @@ let aiming = false;
 let aimStart = { x: 0, y: 0 };
 let currentMouse = { x: 0, y: 0 };
 let power = 0;
+let settingPower = false;
+let powerSet = false;
 let currentPlayer = 1;
 let playerTypes = { 1: null, 2: null };
 let spin = { x: 0, y: 0 };
@@ -186,7 +188,12 @@ function drawBalls() {
 }
 
 function drawAim() {
-    if (!aiming || ballsMoving || (gameMode === 'ai' && currentPlayer === 2)) return;
+    if ((!aiming && !settingPower) || ballsMoving || (gameMode === 'ai' && currentPlayer === 2)) return;
+    
+    if (settingPower) {
+        document.getElementById('powerFill').style.height = (power * 100) + '%';
+        return;
+    }
     
     const dx = cueBall.x - currentMouse.x;
     const dy = cueBall.y - currentMouse.y;
@@ -599,7 +606,12 @@ canvas.addEventListener('mousedown', e => {
     const rect = canvas.getBoundingClientRect();
     currentMouse.x = e.clientX - rect.left;
     currentMouse.y = e.clientY - rect.top;
-    aiming = true;
+    
+    if (!powerSet) {
+        settingPower = true;
+    } else {
+        aiming = true;
+    }
 });
 
 canvas.addEventListener('touchstart', e => {
@@ -609,7 +621,12 @@ canvas.addEventListener('touchstart', e => {
     const touch = e.touches[0];
     currentMouse.x = touch.clientX - rect.left;
     currentMouse.y = touch.clientY - rect.top;
-    aiming = true;
+    
+    if (!powerSet) {
+        settingPower = true;
+    } else {
+        aiming = true;
+    }
 });
 
 document.addEventListener('mousemove', e => {
@@ -617,7 +634,7 @@ document.addEventListener('mousemove', e => {
     currentMouse.x = e.clientX - rect.left;
     currentMouse.y = e.clientY - rect.top;
     
-    if (aiming && !ballsMoving) {
+    if (settingPower && !ballsMoving) {
         const dx = cueBall.x - currentMouse.x;
         const dy = cueBall.y - currentMouse.y;
         power = Math.min(Math.sqrt(dx * dx + dy * dy) / 200, 1);
@@ -625,14 +642,14 @@ document.addEventListener('mousemove', e => {
 });
 
 document.addEventListener('touchmove', e => {
-    if (!aiming) return;
+    if (!settingPower && !aiming) return;
     e.preventDefault();
     const rect = canvas.getBoundingClientRect();
     const touch = e.touches[0];
     currentMouse.x = touch.clientX - rect.left;
     currentMouse.y = touch.clientY - rect.top;
     
-    if (!ballsMoving) {
+    if (settingPower && !ballsMoving) {
         const dx = cueBall.x - currentMouse.x;
         const dy = cueBall.y - currentMouse.y;
         power = Math.min(Math.sqrt(dx * dx + dy * dy) / 200, 1);
@@ -640,7 +657,15 @@ document.addEventListener('touchmove', e => {
 });
 
 document.addEventListener('mouseup', e => {
-    if (!aiming || ballsMoving) return;
+    if (ballsMoving) return;
+    
+    if (settingPower) {
+        settingPower = false;
+        powerSet = true;
+        return;
+    }
+    
+    if (!aiming) return;
     aiming = false;
     
     const dx = cueBall.x - currentMouse.x;
@@ -656,12 +681,21 @@ document.addEventListener('mouseup', e => {
     ballsPocketedThisTurn = [];
     
     power = 0;
+    powerSet = false;
     document.getElementById('powerFill').style.height = '0%';
 });
 
 document.addEventListener('touchend', e => {
-    if (!aiming || ballsMoving) return;
+    if (ballsMoving) return;
     e.preventDefault();
+    
+    if (settingPower) {
+        settingPower = false;
+        powerSet = true;
+        return;
+    }
+    
+    if (!aiming) return;
     aiming = false;
     
     const dx = cueBall.x - currentMouse.x;
@@ -677,6 +711,7 @@ document.addEventListener('touchend', e => {
     ballsPocketedThisTurn = [];
     
     power = 0;
+    powerSet = false;
     document.getElementById('powerFill').style.height = '0%';
 });
 
